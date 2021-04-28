@@ -1,41 +1,22 @@
 <template>
-  <button @click="getName()">button</button>
+  <button @click="getData()">Click</button>
 </template>
 
 <script>
-
-// client-side
-const io = require("socket.io-client");
-const socket = io("https://localhost:3000", {
-  withCredentials: true,
-  transportOptions: {
-    polling: {
-      extraHeaders: {
-        "my-custom-header": "abcd"
-      }
-    }
-  }
-});
 export default {
   data() {
-    return {
-      firstname: "xavierdEr",
-    };
+    return {};
   },
   methods: {
-    getName() {
-      console.log(this.firstname);
-      io.on("connection", (socket) => {
-        socket.on("disconnect", () => {
-          console.log("A user disconnected");
-        });
-      });
+    getData() {
+      // console.log("clicked!");
+      this.$socket.emit("sendData", "Message Sent!");
     },
   },
   mounted() {
-    socket.on("newdata", fetchedData => {
-        console.log(fetchedData);
-      })
+    this.$options.sockets.sendData = (data) => {
+      console.log(data);
+    };
   },
 };
 </script>
