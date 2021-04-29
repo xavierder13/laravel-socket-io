@@ -53,9 +53,6 @@ class RoleController extends Controller
         $role->save();
         $role->syncPermissions($request->get('permission'));
 
-        //PUSHER - send data/message if role is created
-        // event(new EventNotification('create-role', 'roles'));
-
         return response()->json(['success' => 'Record has successfully added', 'role' => $role], 200);
     }
 
@@ -116,8 +113,6 @@ class RoleController extends Controller
 
         $user_permissions = Auth::user()->getAllPermissions()->pluck('name');
 
-        event(new WebsocketEvent(['action' => 'role-edit']));
-
         return response()->json([
             'success' => 'Record has been updated', 
             'user_roles' => $user_roles, 
@@ -144,9 +139,6 @@ class RoleController extends Controller
         }
 
         $role->delete();
-
-        //PUSHER - send data/message if role is deleted
-        // event(new EventNotification('delete-role', 'roles'));
 
         return response()->json(['success' => 'Record has been deleted'], 200);
     }

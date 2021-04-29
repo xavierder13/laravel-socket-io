@@ -45,9 +45,6 @@ class PermissionController extends Controller
         $permission->guard_name = 'web';
         $permission->save();
 
-        //PUSHER - send data/message if permission is created
-        // event(new EventNotification('create-permission', 'permissions'));
-
         return response()->json(['success' => 'Record has successfully added', 'permission' => $permission], 200);
     }
 
@@ -98,8 +95,6 @@ class PermissionController extends Controller
         $permission->name = $request->get('name');
         $permission->save();
 
-        //PUSHER - send data/message if permission is updated
-        // event(new EventNotification('edit-permission', 'permissions'));
         $user_roles = Auth::user()->roles->pluck('name')->all();
 
         $user_permissions = Auth::user()->getAllPermissions()->pluck('name');
@@ -124,9 +119,6 @@ class PermissionController extends Controller
         }
 
         $permission->delete();
-
-        //PUSHER - send data/message if permission is deleted
-        // event(new EventNotification('delete-permission', 'permissions'));
 
         return response()->json(['success' => 'Record has been deleted'], 200);
     }

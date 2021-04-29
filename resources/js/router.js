@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Home from './views/Home.vue';
 import Login from './auth/Login.vue';
+import UserIndex from './views/user/UserIndex.vue';
 import Permission from './views/permission/PermissionIndex.vue';
 import Role from './views/role/RoleIndex.vue';
 import PageNotFound from './404/PageNotFound.vue';
@@ -16,6 +17,23 @@ const routes = [
     name: 'home',
     component: Home,
     children: [
+      {
+        path: '/user/index',
+        name: 'user.index',
+        component: UserIndex,
+        beforeEnter(to, from, next)
+        { 
+          let user_permissions = JSON.parse(localStorage.getItem("user_permissions"));
+          if(user_permissions.includes('user-list') || user_permissions.includes('user-create'))
+          {
+            next();
+          }
+          else
+          {
+            next('/unauthorize');
+          }
+        }
+      },
       {
         path: '/permission/index',
         name: 'permission.index',

@@ -11,16 +11,16 @@ use Hash;
 use Auth;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use App\User;
 
 class UserController extends Controller
 {
     public function index()
     {   
 
-        // $users = User::with('roles')->with('roles.permissions')->get();
-        // $users = User::all();
+        $users = User::with('roles')->with('roles.permissions')->get();
 
-        // return response()->json(['users' => $users], 200);
+        return response()->json(['users' => $users], 200);
     }
 
     public function store(Request $request)
@@ -29,12 +29,12 @@ class UserController extends Controller
         
         $rules = [
             'name.required' => 'Please enter name',
+            'email.required' => 'Email is required',
             'email.email' => 'Please enter a valid email',
             'username.required' => 'Please enter username',
             'username.unique' => 'Username already exists',
             'password.min' => 'Password must be atleast 8 characters',
             'password.same' => 'Password and Confirm Password did not match',
-            'type.required' => 'User type is required',
         ];
 
         $valid_fields = [
@@ -42,7 +42,6 @@ class UserController extends Controller
             // 'email' => 'string|email|max:255',
             'email' => 'required|string|email|unique:users,email',
             'password' => 'required|string|min:8|same:confirm_password',
-            'type' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $valid_fields, $rules);
@@ -56,13 +55,10 @@ class UserController extends Controller
         $user->name = $request->get('name');
         $user->email = $request->get('email');
         $user->password = Hash::make($request->get('password'));
-        $user->type = $request->get('type');
         $user->active = $request->get('active');
         $user->save();
 
         $user->assignRole($request->get('roles'));
-
-        event(new WebsocketEvent(['action' => 'user-create']));
 
         return response()->json(['success' => 'Record has successfully added', 'user' => $user], 200);
     }
@@ -139,8 +135,6 @@ class UserController extends Controller
         $user_roles = $user->roles->pluck('name')->all();
 
         $user_permissions = $user->getAllPermissions()->pluck('name');
-        
-        event(new WebsocketEvent(['action' => 'user-edit']));
 
         return response()->json([
             'success' => 'Record has been updated', 
@@ -160,14 +154,13 @@ class UserController extends Controller
             return abort(404, 'Not Found');
         }
 
-        if($user->email == 'admin@mis.ac')
+        // admin user
+        if($user->id == 1)
         {
             return abort(403, 'Forbidden');
         }
 
         $user->delete();
-
-        event(new WebsocketEvent(['action' => 'user-delete']));
 
         return response()->json(['success' => 'Record has been deleted'], 200);
     }
