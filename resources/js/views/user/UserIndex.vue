@@ -472,19 +472,19 @@ export default {
         this.overlay = true;
         let roles = [];
 
+        if (this.editedItem.roles.length) {
+          this.editedItem.roles.forEach((value, index) => {
+            roles.push(value.name);
+          });
+        }
+
+        this.editedItem.roles = roles;
+
         if (this.editedIndex > -1) {
           if (this.passwordHasChanged) {
             this.editedItem.password = this.password;
             this.editedItem.confirm_password = this.confirm_password;
           }
-
-          if (this.editedItem.roles.length) {
-            this.editedItem.roles.forEach((value, index) => {
-              roles.push(value.name);
-            });
-          }
-
-          this.editedItem.roles = roles;
 
           const data = this.editedItem;
           const user_id = this.editedItem.id;
