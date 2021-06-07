@@ -12,6 +12,8 @@ use Auth;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\User;
+use Spatie\Activitylog\Models\Activity;
+
 
 class UserController extends Controller
 {
@@ -124,8 +126,8 @@ class UserController extends Controller
         {
             $user->password = Hash::make($request->get('password'));
         }
-        $user->type = $request->get('type');
         $user->active = $request->get('active');
+
         $user->save();
         
         DB::table('model_has_roles')->where('model_id',$user_id)->delete();

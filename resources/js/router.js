@@ -2,12 +2,13 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Home from './views/Home.vue';
 import Login from './auth/Login.vue';
+import Dashboard from './views/dashboard/Dashboard.vue';
 import UserIndex from './views/user/UserIndex.vue';
 import Permission from './views/permission/PermissionIndex.vue';
 import Role from './views/role/RoleIndex.vue';
+import ActivityLogs from './views/activity_logs/ActivityLogs.vue';
 import PageNotFound from './404/PageNotFound.vue';
 import Unauthorize from './401/Unauthorize.vue';
-
 
 Vue.use(Router);
 
@@ -17,6 +18,24 @@ const routes = [
     name: 'home',
     component: Home,
     children: [
+      {
+        path: '/dashboard',
+        name: 'dashboard',
+        component: Dashboard,
+        beforeEnter(to, from, next)
+        { 
+          let user_permissions = JSON.parse(localStorage.getItem("user_permissions"));
+          // if(user_permissions.includes('project-list') || user_permissions.includes('project-create'))
+          // {
+          //   next();
+          // }
+          // else
+          // {
+          //   next('/unauthorize');
+          // }
+          next();
+        }
+      },
       {
         path: '/user/index',
         name: 'user.index',
@@ -59,6 +78,23 @@ const routes = [
         { 
           let user_permissions = JSON.parse(localStorage.getItem("user_permissions"));
           if(user_permissions.includes('role-list') || user_permissions.includes('role-create'))
+          {
+            next();
+          }
+          else
+          {
+            next('/unauthorize');
+          }
+        }
+      },
+      {
+        path: '/activity_logs',
+        name: 'activity_logs',
+        component: ActivityLogs,
+        beforeEnter(to, from, next)
+        { 
+          let user_permissions = JSON.parse(localStorage.getItem("user_permissions"));
+          if(user_permissions.includes('activity-logs'))
           {
             next();
           }

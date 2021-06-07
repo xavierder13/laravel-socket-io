@@ -33,7 +33,16 @@
       <v-list>
         <v-list-item
           link
-          :to="{ name: 'user.index' }"
+          to="/dashboard"
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-view-dashboard</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>Dashboard</v-list-item-title>
+        </v-list-item>
+        <v-list-item
+          link
+          to="/user/index"
           v-if="permissions.user_list || permissions.user_create"
         >
           <v-list-item-icon>
@@ -78,7 +87,18 @@
               <v-list-item-title>Permission</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
+          
         </v-list-group>
+        <v-list-item
+          link
+          to="/activity_logs"
+          v-if="permissions.activity_logs"
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-history</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>Activity Logs</v-list-item-title>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
     <v-overlay :absolute="absolute" :value="overlay">
@@ -128,6 +148,7 @@ export default {
         permission_create: false,
         permission_edit: false,
         permission_delete: false,
+        activity_logs: false,
       },
       roles: {
         administrator: false,
@@ -224,8 +245,7 @@ export default {
       this.permissions.role_create = this.hasPermission(["role-create"]);
       this.permissions.role_edit = this.hasPermission(["role-edit"]);
       this.permissions.role_delete = this.hasPermission(["role-delete"]);
-      this.permissions.ref_no_setting = this.hasPermission(["ref-no-setting"]);
-      this.permissions.print_preview = this.hasPermission(["print-preview"]);
+      this.permissions.activity_logs = this.hasPermission(["activity-logs"]);
       this.roles.administrator = this.hasRole(["Administrator"]);
     },
 
