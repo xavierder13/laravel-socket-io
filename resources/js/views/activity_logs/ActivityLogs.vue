@@ -76,8 +76,12 @@ export default {
       headers: [
         { text: "Table", value: "log_name" },
         { text: "Event", value: "description" },
+        { text: "Date", value: "log_date" },
+        { text: "Data", value: "properties", width: "150px" },
+        { text: "User Name", value: "name" },
+        { text: "User Email", value: "email" },
       ],
-      
+
       activity_logs: [],
       roles: [],
       roles_permissions: [],
@@ -143,16 +147,16 @@ export default {
     },
 
     getRolesPermissions() {
-      this.permissions.activity_logs = Home.methods.hasPermission(["activity-logs"]);
+      this.permissions.activity_logs = Home.methods.hasPermission([
+        "activity-logs",
+      ]);
 
       // if user is not authorize
       if (!this.permissions.activity_logs) {
         this.$router.push("/unauthorize").catch(() => {});
       }
-      
     },
     websocket() {
-
       // Socket.IO fetch data
       this.$options.sockets.sendData = (data) => {
         let action = data.action;
@@ -166,13 +170,10 @@ export default {
         }
 
         this.getActivityLogs();
-        
-      }
+      };
     },
   },
-  computed: {
-    
-  },
+  computed: {},
   mounted() {
     access_token = localStorage.getItem("access_token");
     this.getActivityLogs();
