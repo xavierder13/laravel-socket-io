@@ -398,25 +398,6 @@ export default {
       }
     },
     websocket() {
-      // window.Echo.channel("WebsocketChannel").listen("WebsocketEvent", (e) => {
-      //   let action = e.data.action;
-  
-      //   if (
-      //     action == "user-edit" ||
-      //     action == "role-edit" ||
-      //     action == "role-delete" ||
-      //     action == "permission-delete"
-      //   ) {
-
-      //     this.userRolesPermissions();
-      //   }
-
-      //   if(action == 'permission-create' || action == 'permission-edit' || action == 'permission-delete')
-      //   {
-      //     this.getPermission();
-      //   }
-
-      // });
 
       // Socket.IO fetch data
       this.$options.sockets.sendData = (data) => {
@@ -425,6 +406,7 @@ export default {
           action == "user-edit" ||
           action == "role-edit" ||
           action == "role-delete" ||
+          action == "permission-create" ||
           action == "permission-delete"
         ) {
 

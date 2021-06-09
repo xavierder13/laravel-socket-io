@@ -17,7 +17,7 @@ class RoleController extends Controller
     {   
         // $user_permissions =  Auth::user()->with('roles', 'roles.permissions')->get();
         // return view('pages.diagnosis.create', compact('patient_service', 'ps_item_id', 'file_no', 'user_permissions'));
-        $roles = Role::orderBy('id', 'Desc')->get();
+        $roles = Role::orderBy('id', 'Asc')->get();
         $permissions = Permission::all();
         return response()->json(['roles' => $roles], 200);
     }
@@ -98,7 +98,7 @@ class RoleController extends Controller
         // Administrator Role
         if($roleid == 1)
         {   
-            return abort(401, 'Forbidden');
+            return abort(403, 'Forbidden');
             // return response()->json(['error' => "You can't update role Admin"], 200);
         }
 
@@ -134,7 +134,7 @@ class RoleController extends Controller
         // Administrator Role
         if($roleid == 1)
         {   
-            return abort(401, 'Forbidden');
+            return abort(403, 'Forbidden');
             // return response()->json(['error' => "You can't update role Admin"], 200);
         }
 

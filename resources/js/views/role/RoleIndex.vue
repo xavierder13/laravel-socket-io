@@ -52,6 +52,7 @@
                               :error-messages="roleErrors"
                               @input="$v.editedRole.name.$touch()"
                               @blur="$v.editedRole.name.$touch()"
+                              :readonly="role.id != 1 ? true : ''"
                             ></v-text-field>
                           </v-col>
                         </v-row>
@@ -63,6 +64,7 @@
                                 :label="item.name"
                                 :value="item.id"
                                 class="pa-0 ma-0"
+                                :readonly="role.id != 1 ? true : ''"
                               ></v-checkbox>
                             </v-col>
                           </template>
@@ -80,6 +82,7 @@
                         @click="save"
                         class="mb-4 mr-4"
                         :disabled="disabled"
+                        v-if="role.id != 1"
                       >
                         Save
                       </v-btn>
@@ -103,6 +106,9 @@
               </v-icon>
               <v-icon small color="red" @click="showConfirmAlert(item)" v-if="user_permissions.role_delete && item.name != 'Administrator'">
                 mdi-delete
+              </v-icon>
+              <v-icon small color="info" @click="editRole(item)" v-if="item.name == 'Administrator'">
+                mdi-eye
               </v-icon>
             </template>
           </v-data-table>
@@ -149,6 +155,7 @@ export default {
         administrator: false,
       },
       roles: [],
+      role: [],
       editedIndex: -1,
       editedRole: {
         name: "",
@@ -196,6 +203,8 @@ export default {
 
     editRole(item) {
       const data = { roleid: item.id };
+
+      this.role = item;
 
       Axios.post("/api/role/edit", data, {
         headers: {
@@ -429,17 +438,6 @@ export default {
       }
     },
     websocket() {
-      // window.Echo.channel("WebsocketChannel").listen("WebsocketEvent", (e) => {
-      //   let action = e.data.action;
-      //   if (
-      //     action == "user-edit" ||
-      //     action == "role-edit" ||
-      //     action == "role-delete" ||
-      //     action == "permission-delete"
-      //   ) {
-      //     this.userRolesPermissions();
-      //   }
-      // });
 
       // Socket.IO fetch data
       this.$options.sockets.sendData = (data) => {
@@ -448,6 +446,7 @@ export default {
           action == "user-edit" ||
           action == "role-edit" ||
           action == "role-delete" ||
+          action == "permission-create" ||
           action == "permission-delete"
         ) {
           this.userRolesPermissions();

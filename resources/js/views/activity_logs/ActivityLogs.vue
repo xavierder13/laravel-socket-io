@@ -77,6 +77,7 @@ export default {
         { text: "Table", value: "log_name" },
         { text: "Event", value: "description" },
         { text: "Date", value: "log_date" },
+        { text: "Subject ID", value: "subject_id" },
         { text: "Data", value: "properties", width: "150px" },
         { text: "User Name", value: "name" },
         { text: "User Email", value: "email" },
@@ -164,6 +165,7 @@ export default {
           action == "user-edit" ||
           action == "role-edit" ||
           action == "role-delete" ||
+          action == "permission-create" ||
           action == "permission-delete"
         ) {
           this.userRolesPermissions();

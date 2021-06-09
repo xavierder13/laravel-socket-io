@@ -60,6 +60,7 @@
                               label="Full Name"
                               @input="$v.editedItem.name.$touch()"
                               @blur="$v.editedItem.name.$touch()"
+                              :readonly="editedItem.id == 1 ? true : ''"
                             ></v-text-field>
                           </v-col>
                         </v-row>
@@ -72,7 +73,7 @@
                               label="E-mail"
                               @input="$v.editedItem.email.$touch()"
                               @blur="$v.editedItem.email.$touch()"
-                              :readonly="emailReadonly"
+                              :readonly="emailReadonly || editedItem.id == 1 ? true : ''"
                             ></v-text-field>
                           </v-col>
                         </v-row>
@@ -89,6 +90,7 @@
                               @keyup="passwordChange()"
                               @focus="onFocus()"
                               type="password"
+                              :readonly="editedItem.id == 1 ? true : ''"
                             ></v-text-field>
                           </v-col>
                         </v-row>
@@ -107,6 +109,7 @@
                               @keyup="passwordChange()"
                               @focus="onFocus()"
                               type="password"
+                              :readonly="editedItem.id == 1 ? true : ''"
                             ></v-text-field>
                           </v-col>
                         </v-row>
@@ -120,6 +123,7 @@
                               label="Roles"
                               multiple
                               chips
+                              :readonly="editedItem.id == 1 ? true : ''"
                             ></v-combobox>
                           </v-col>
                         </v-row>
@@ -128,6 +132,7 @@
                             <v-switch
                               v-model="switch1"
                               :label="activeStatus"
+                              :readonly="editedItem.id == 1 ? true : ''"
                             ></v-switch>
                           </v-col>
                         </v-row>
@@ -231,7 +236,7 @@
                 class="mr-2"
                 color="green"
                 @click="editUser(item)"
-                v-if="permissions.user_edit"
+                v-if="permissions.user_edit && item.id != 1"
               >
                 mdi-pencil
               </v-icon>
@@ -242,6 +247,9 @@
                 v-if="permissions.user_delete && item.id != 1"
               >
                 mdi-delete
+              </v-icon>
+              <v-icon small color="info" @click="editUser(item)" v-if="item.id == 1">
+                mdi-eye
               </v-icon>
             </template>
           </v-data-table>
@@ -625,23 +633,6 @@ export default {
       
     },
     websocket() {
-      // window.Echo.channel("WebsocketChannel").listen("WebsocketEvent", (e) => {
-      //   let action = e.data.action;
-      //   if (
-      //     action == "user-edit" ||
-      //     action == "role-edit" ||
-      //     action == "role-delete" ||
-      //     action == "permission-delete"
-      //   ) {
-      //     this.userRolesPermissions();
-      //   }
-
-      //   if(action == 'user-create' || action == 'user-edit' || action == 'user-delete' || action == 'login')
-      //   {
-      //     this.getUser();
-      //   }
-
-      // });
 
       // Socket.IO fetch data
       this.$options.sockets.sendData = (data) => {
@@ -650,6 +641,7 @@ export default {
           action == "user-edit" ||
           action == "role-edit" ||
           action == "role-delete" ||
+          action == "permission-create" ||
           action == "permission-delete"
         ) {
           this.userRolesPermissions();
