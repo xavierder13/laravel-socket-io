@@ -98,7 +98,7 @@
             v-if="user_permissions.role_list"
           >
             <template v-slot:item.actions="{ item }">
-              <v-icon small class="mr-2" color="green" @click="editRole(item)" v-if="user_permissions.role_edit">
+              <v-icon small class="mr-2" color="green" @click="editRole(item)" v-if="user_permissions.role_edit && item.name != 'Administrator'">
                 mdi-pencil
               </v-icon>
               <v-icon small color="red" @click="showConfirmAlert(item)" v-if="user_permissions.role_delete && item.name != 'Administrator'">

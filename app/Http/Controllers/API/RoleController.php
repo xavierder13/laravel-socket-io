@@ -95,6 +95,13 @@ class RoleController extends Controller
             return response()->json($validator->errors(), 200);
         }
 
+        // Administrator Role
+        if($roleid == 1)
+        {   
+            return abort(401, 'Forbidden');
+            // return response()->json(['error' => "You can't update role Admin"], 200);
+        }
+
         $role = Role::find($roleid);
 
         //if record is empty then display error page
@@ -123,18 +130,20 @@ class RoleController extends Controller
     public function delete(Request $request)
     {   
         $roleid = $request->get('roleid');
+
+        // Administrator Role
+        if($roleid == 1)
+        {   
+            return abort(401, 'Forbidden');
+            // return response()->json(['error' => "You can't update role Admin"], 200);
+        }
+
         $role = Role::find($roleid);
 
         //if record is empty then display error page
         if(empty($role->id))
         {
             return abort(404, 'Not Found');
-        }
-
-        if($role->name == 'Admin')
-        {   
-            return abort(401, 'Forbidden');
-            // return response()->json(['error' => "You can't delete role Admin"], 200);
         }
 
         $role->delete();
