@@ -42,7 +42,6 @@ class PermissionController extends Controller
 
         $permission = new Permission();
         $permission->name = $request->get('name');
-        $permission->guard_name = 'web';
         $permission->save();
 
         return response()->json(['success' => 'Record has successfully added', 'permission' => $permission], 200);
