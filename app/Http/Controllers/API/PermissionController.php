@@ -45,6 +45,7 @@ class PermissionController extends Controller
         $permission->guard_name = 'web';
         $permission->save();
 
+        // Administrator Role
         $role = Role::find(1);
 
         $permissions = Permission::pluck('id','id')->all();
