@@ -60,7 +60,7 @@
                               label="Full Name"
                               @input="$v.editedItem.name.$touch()"
                               @blur="$v.editedItem.name.$touch()"
-                              :readonly="editedItem.id == 1 ? true : ''"
+                              :readonly="editedItem.id == 1 ? true : false"
                             ></v-text-field>
                           </v-col>
                         </v-row>
@@ -73,7 +73,7 @@
                               label="E-mail"
                               @input="$v.editedItem.email.$touch()"
                               @blur="$v.editedItem.email.$touch()"
-                              :readonly="emailReadonly || editedItem.id == 1 ? true : ''"
+                              :readonly="emailReadonly || editedItem.id == 1 ? true : false"
                             ></v-text-field>
                           </v-col>
                         </v-row>
@@ -90,7 +90,7 @@
                               @keyup="passwordChange()"
                               @focus="onFocus()"
                               type="password"
-                              :readonly="editedItem.id == 1 ? true : ''"
+                              :readonly="editedItem.id == 1 ? true : false"
                             ></v-text-field>
                           </v-col>
                         </v-row>
@@ -109,7 +109,7 @@
                               @keyup="passwordChange()"
                               @focus="onFocus()"
                               type="password"
-                              :readonly="editedItem.id == 1 ? true : ''"
+                              :readonly="editedItem.id == 1 ? true : false"
                             ></v-text-field>
                           </v-col>
                         </v-row>
@@ -123,7 +123,7 @@
                               label="Roles"
                               multiple
                               chips
-                              :readonly="editedItem.id == 1 ? true : ''"
+                              :readonly="editedItem.id == 1 ? true : false"
                             ></v-combobox>
                           </v-col>
                         </v-row>
@@ -132,7 +132,7 @@
                             <v-switch
                               v-model="switch1"
                               :label="activeStatus"
-                              :readonly="editedItem.id == 1 ? true : ''"
+                              :readonly="editedItem.id == 1 ? true : false"
                             ></v-switch>
                           </v-col>
                         </v-row>
@@ -149,6 +149,7 @@
                         @click="save"
                         :disabled="disabled"
                         class="mb-4 mr-4"
+                        v-if="editedItem.id != 1"
                       >
                         Save
                       </v-btn>
@@ -568,7 +569,7 @@ export default {
       this.switch1 = true;
     },
     onFocus() {
-      if (this.editedIndex > -1) {
+      if (this.editedIndex > -1 && this.editedItem.id != 1) {
         if (!this.passwordHasChanged) {
           this.password = "";
           this.confirm_password = "";
@@ -656,7 +657,7 @@ export default {
   },
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "New User" : "Edit User";
+      return this.editedItem == this.editedIndex === -1 ? "New User" : "Edit User";
     },
     nameErrors() {
       const errors = [];
