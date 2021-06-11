@@ -34,12 +34,10 @@
                 >
                   <v-icon>mdi-plus</v-icon>
                 </v-btn>
-                <v-dialog v-model="dialog" max-width="700px" persistent>
+                <v-dialog v-model="dialog" max-width="1000px" persistent>
                   <v-card>
                     <v-card-title class="mb-0 pb-0">
-                      <span class="headline"
-                        >{{ formTitle }} {{ role.id }}</span
-                      >
+                      <span class="headline">{{ formTitle }}</span>
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-card-text>
@@ -58,6 +56,19 @@
                             ></v-text-field>
                           </v-col>
                         </v-row>
+                        <!-- <v-row class="pa-2">
+                          <template v-for="item in permissions">
+                            <v-col cols="2" class="pa-0 ma-0">
+                              <v-checkbox
+                                v-model="permission"
+                                :label="item.name"
+                                :value="item.id"
+                                class="pa-0 ma-0"
+                                :readonly="role.id == 1 ? true : false"
+                              ></v-checkbox>
+                            </v-col>
+                          </template>
+                        </v-row> -->
                         <v-row>
                           <v-col>
                             <v-combobox
@@ -69,7 +80,21 @@
                               multiple
                               chips
                               :readonly="role.id == 1 ? true : false"
-                            ></v-combobox>
+                              :clearable="role.id != 1 ? true : false"
+                            >
+                              <template v-slot:selection="data">
+                                <v-chip
+                                  color="secondary"
+                                  v-bind="data.attrs"
+                                  :input-value="data.selected"
+                                  :close="role.id != 1 ? true : false"
+                                  @click="data.select"
+                                  @click:close="removePermission(data.item)"
+                                >
+                                  {{ data.item.name }}
+                                </v-chip>
+                              </template>
+                            </v-combobox>
                           </v-col>
                         </v-row>
                       </v-container>
@@ -92,41 +117,6 @@
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
-                <v-dialog
-                  v-model="dialogPermission"
-                  max-width="700px"
-                  persistent
-                >
-                  <v-card>
-                    <v-card-title class="mb-0 pb-0">
-                      <span class="headline">{{ role.name }}</span>
-                      <v-spacer></v-spacer>
-                      <v-icon @click="dialogPermission = false"
-                        >mdi-close</v-icon
-                      >
-                    </v-card-title>
-                    <v-divider></v-divider>
-                    <v-card-text>
-                      <v-container>
-                        <v-row>
-                          <v-col class="mt-0 mb-0 pt-0 pb-0">
-                            <v-chip
-                              color="secondary"
-                              v-for="(permission, i) in role.permissions"
-                              :key="i"
-                              class="ma-1"
-                            >
-                              {{ permission.name }}
-                            </v-chip>
-                          </v-col>
-                        </v-row>
-                      </v-container>
-                    </v-card-text>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
               </v-toolbar>
             </template>
           </v-card-title>
@@ -142,8 +132,11 @@
               <v-icon
                 small
                 class="mr-1"
-                color="info"
-                @click="viewPermission(item)"
+                color="primary"
+                @click="editRole(item)"
+                v-if="
+                  user_permissions.role_delete && item.name == 'Administrator'
+                "
               >
                 mdi-eye
               </v-icon>
@@ -415,7 +408,6 @@ export default {
               if (response.data.success) {
                 // send data to Sockot.IO Server
                 this.$socket.emit("sendData", { action: "role-create" });
-
                 this.showAlert();
                 this.close();
 
@@ -442,6 +434,11 @@ export default {
     viewPermission(item) {
       this.dialogPermission = true;
       this.role = item;
+    },
+
+    removePermission(item) {
+      const index = this.permission.indexOf(item);
+      if (index >= 0) this.permission.splice(index, 1);
     },
 
     userRolesPermissions() {
@@ -517,7 +514,11 @@ export default {
   },
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "New Role" : "Edit Role";
+      return this.editedIndex === -1
+        ? "New Role"
+        : this.editedRole.name == "Administrator"
+        ? "Role"
+        : "Edit Role";
     },
     roleErrors() {
       const errors = [];
