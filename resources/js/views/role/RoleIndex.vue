@@ -351,11 +351,17 @@ export default {
 
       if (!this.$v.$error) {
         this.disabled = true;
+        let permission = [];
+
+        // get the permission id only
+        this.permission.forEach((value, index) => {
+          permission.push(value.id);
+        });
 
         if (this.editedIndex > -1) {
           const data = {
             name: this.editedRole.name,
-            permission: this.permission,
+            permission: permission,
           };
           const roleid = this.editedRole.id;
 
@@ -397,7 +403,7 @@ export default {
         } else {
           const data = {
             name: this.editedRole.name,
-            permission: this.permission,
+            permission: permission,
           };
 
           Axios.post("/api/role/store", data, {
