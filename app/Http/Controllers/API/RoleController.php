@@ -49,6 +49,7 @@ class RoleController extends Controller
 
         $role = new Role();
         $role->name = $request->get('name');
+        $role->guard_name = 'web';
         $role->save();
         $role->syncPermissions($request->get('permission'));
 

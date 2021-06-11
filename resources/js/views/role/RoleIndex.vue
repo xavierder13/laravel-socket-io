@@ -391,6 +391,7 @@ export default {
             },
             (error) => {
               console.log(error);
+              this.disabled = false;
             }
           );
         } else {
@@ -409,16 +410,17 @@ export default {
                 // send data to Sockot.IO Server
                 this.$socket.emit("sendData", { action: "role-create" });
 
-                this.disabled = false;
                 this.showAlert();
                 this.close();
 
                 //push recently added data from database
                 this.roles.push(response.data.role);
               }
+              this.disabled = false;
             },
             (error) => {
               console.log(error);
+              this.disabled = false;
             }
           );
         }
