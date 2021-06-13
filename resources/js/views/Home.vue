@@ -203,7 +203,7 @@ export default {
       );
     },
     userRolesPermissions() {
-      Axios.get("api/user/roles_permissions", {
+      Axios.get("/api/user/roles_permissions", {
         headers: {
           Authorization: "Bearer " + access_token,
         },

@@ -8,7 +8,7 @@ import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import VueSocketio from 'vue-socket.io';
 
-Vue.use(VueSocketio, 'http://localhost:3000');
+Vue.use(VueSocketio, 'http://localhost:4000');
 Vue.use(Vuetify);   
 Vue.use(VuetifyMask);
 Vue.use(Vuelidate);

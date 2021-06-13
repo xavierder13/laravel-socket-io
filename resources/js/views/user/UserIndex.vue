@@ -115,7 +115,7 @@
                         </v-row>
                         <v-row>
                           <v-col class="mt-0 mb-0 pt-0 pb-0">
-                            <v-combobox
+                            <v-autocomplete
                               v-model="editedItem.roles"
                               :items="roles"
                               item-text="name"
@@ -124,7 +124,7 @@
                               multiple
                               chips
                               :readonly="editedItem.id == 1 ? true : false"
-                            ></v-combobox>
+                            ></v-autocomplete>
                           </v-col>
                         </v-row>
                         <v-row>

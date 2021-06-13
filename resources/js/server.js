@@ -2,8 +2,8 @@ let app = require('express')();
 let http = require('http').Server(app);
 const io = require("socket.io")(http);
 
-http.listen(3000, () => {
-  console.log('Listening on port *: 3000');
+http.listen(4000, () => {
+  console.log('Listening on port *: 4000');
 });
 
 io.on("connection", socket => {
