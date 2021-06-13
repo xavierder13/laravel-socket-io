@@ -158,7 +158,7 @@ export default {
 
   methods: {
     getUser() {
-      Axios.get("/api/user/index", {
+      Axios.get("/api/auth/init", {
         headers: {
           Authorization: "Bearer " + access_token,
         },
