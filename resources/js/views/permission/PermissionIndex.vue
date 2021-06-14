@@ -174,6 +174,9 @@ export default {
       }).then((response) => {
         this.permissions = response.data.permissions;
         this.loading = false;
+       
+      }, (error) => {
+        this.isUnauthorized(error);
       });
     },
 
@@ -201,7 +204,7 @@ export default {
           this.loading = false;
         },
         (error) => {
-          console.log(error);
+          this.isUnauthorized(error);
         }
       );
     },
@@ -304,7 +307,7 @@ export default {
               this.disabled = false;
             },
             (error) => {
-              console.log(error);
+              this.isUnauthorized(error);
               this.disabled = false;
             }
           );
@@ -332,7 +335,7 @@ export default {
               this.disabled = false;
             },
             (error) => {
-              console.log(error);
+              this.isUnauthorized(error);
               this.disabled = false;
             }
           );
@@ -363,6 +366,13 @@ export default {
         );
         this.getRolesPermissions();
       });
+    },
+
+    isUnauthorized(error) {
+      // if unauthenticated (401)
+      if (error.response.status == "401") {
+        this.$router.push({ name: "unauthorize" });
+      }
     },
 
     getRolesPermissions() {
@@ -398,6 +408,7 @@ export default {
       ) {
         this.$router.push("/unauthorize").catch(() => {});
       }
+      
     },
     websocket() {
 

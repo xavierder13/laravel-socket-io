@@ -134,9 +134,7 @@
                 class="mr-1"
                 color="primary"
                 @click="editRole(item)"
-                v-if="
-                  user_permissions.role_delete && item.name == 'Administrator'
-                "
+                v-if="item.name == 'Administrator'"
               >
                 mdi-eye
               </v-icon>
@@ -146,7 +144,7 @@
                 color="green"
                 @click="editRole(item)"
                 v-if="
-                  user_permissions.role_delete && item.name != 'Administrator'
+                  user_permissions.role_edit && item.name != 'Administrator'
                 "
               >
                 mdi-pencil
@@ -231,16 +229,7 @@ export default {
   },
 
   methods: {
-    getPermission() {
-      Axios.get("/api/permission/index", {
-        headers: {
-          Authorization: "Bearer " + access_token,
-        },
-      }).then((response) => {
-        this.permissions = response.data.permissions;
-      });
-    },
-
+    
     getRole() {
       this.loading = true;
       Axios.get("/api/role/index", {
@@ -249,7 +238,10 @@ export default {
         },
       }).then((response) => {
         this.roles = response.data.roles;
+        this.permissions = response.data.permissions;
         this.loading = false;
+      }, (error) => {
+        this.isUnauthorized(error);
       });
     },
 
@@ -280,7 +272,7 @@ export default {
           this.loading = false;
         },
         (error) => {
-          console.log(error);
+          this.isUnauthorized(error)
         }
       );
     },
@@ -351,7 +343,7 @@ export default {
           name: this.editedRole.name,
           permission: this.permission,
         };
-
+        
         if (this.editedIndex > -1) {
           const roleid = this.editedRole.id;
 
@@ -386,7 +378,7 @@ export default {
               this.disabled = false;
             },
             (error) => {
-              console.log(error);
+              this.isUnauthorized(error)
               this.disabled = false;
             }
           );
@@ -410,7 +402,7 @@ export default {
               this.disabled = false;
             },
             (error) => {
-              console.log(error);
+              this.isUnauthorized(error)
               this.disabled = false;
             }
           );
@@ -432,6 +424,13 @@ export default {
     removePermission(item) {
       const index = this.permission.indexOf(item.id);
       if (index >= 0) this.permission.splice(index, 1);
+    },
+
+    isUnauthorized(error) {
+      // if unauthenticated (401)
+      if (error.response.status == "401") {
+        this.$router.push({ name: "unauthorize" });
+      }
     },
 
     userRolesPermissions() {
@@ -503,7 +502,7 @@ export default {
           action == "permission-create" ||
           action == "permission-delete"
         ) {
-          this.userRolesPermissions();A
+          this.userRolesPermissions();
         }
       };
     },
@@ -525,7 +524,6 @@ export default {
   },
   mounted() {
     access_token = localStorage.getItem("access_token");
-    this.getPermission();
     this.getRole();
     this.userRolesPermissions();
     this.websocket();

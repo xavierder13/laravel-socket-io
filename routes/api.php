@@ -42,7 +42,7 @@ Route::prefix('auth')->group(function(){
 });
 
 // User Routes
-Route::group(['prefix' => 'user', 'middleware' => ['auth:api']], function(){
+Route::group(['prefix' => 'user', 'middleware' => ['auth:api', 'user.maintenance']], function(){
     Route::get('/index', [
         'uses' => 'API\UserController@index',
         'as' => 'user.index',
@@ -68,7 +68,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth:api']], function(){
         'as' => 'user.delete',
     ]);
 
-    Route::get('roles_permissions', [
+    Route::get('/roles_permissions', [
         'uses' => 'API\UserController@userRolesPermissions',
         'as' => 'user.roles_permissions',
     ]);
@@ -76,7 +76,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth:api']], function(){
 });
 
 //Permissions
-Route::group(['prefix' => 'permission', 'middleware' => ['auth:api']], function(){
+Route::group(['prefix' => 'permission', 'middleware' => ['auth:api', 'permission.maintenance']], function(){
     Route::get('/index', [
         'uses' => 'API\PermissionController@index',
         'as' => 'permission.index',
@@ -88,10 +88,6 @@ Route::group(['prefix' => 'permission', 'middleware' => ['auth:api']], function(
     Route::post('/store', [
         'uses' => 'API\PermissionController@store',
         'as' => 'permission.store',
-    ]);
-    Route::get('/permissions', [
-        'uses' => 'API\PermissionController@getpermissionrecord',
-        'as' => 'getpermissionrecord',
     ]);
     Route::post('/edit', [
         'uses' => 'API\PermissionController@edit',
@@ -109,7 +105,7 @@ Route::group(['prefix' => 'permission', 'middleware' => ['auth:api']], function(
 });
 
 //Roles
-Route::group(['prefix' => 'role', 'middleware' => ['auth:api']], function(){
+Route::group(['prefix' => 'role', 'middleware' => ['auth:api', 'role.maintenance']], function(){
     Route::get('/index', [
         'uses' => 'API\RoleController@index',
         'as' => 'role.index',
@@ -121,10 +117,6 @@ Route::group(['prefix' => 'role', 'middleware' => ['auth:api']], function(){
     Route::post('/store', [
         'uses' => 'API\RoleController@store',
         'as' => 'role.store',
-    ]);
-    Route::get('/roles', [
-        'uses' => 'API\RoleController@getrolerecord',
-        'as' => 'getrolerecord',
     ]);
     Route::post('/edit', [
         'uses' => 'API\RoleController@edit',

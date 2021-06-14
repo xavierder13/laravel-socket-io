@@ -45,7 +45,7 @@
 
                 <v-dialog v-model="dialog" max-width="500px" persistent>
                   <v-card>
-                    <v-card-title>
+                    <v-card-title class="mb-0 pb-0">
                       <span class="headline">{{ formTitle }}</span>
                     </v-card-title>
                     <v-divider></v-divider>
@@ -73,7 +73,11 @@
                               label="E-mail"
                               @input="$v.editedItem.email.$touch()"
                               @blur="$v.editedItem.email.$touch()"
-                              :readonly="emailReadonly || editedItem.id == 1 ? true : false"
+                              :readonly="
+                                emailReadonly || editedItem.id == 1
+                                  ? true
+                                  : false
+                              "
                             ></v-text-field>
                           </v-col>
                         </v-row>
@@ -119,12 +123,23 @@
                               v-model="editedItem.roles"
                               :items="roles"
                               item-text="name"
-                              item-value="id"
+                              item-value="name"
                               label="Roles"
                               multiple
                               chips
                               :readonly="editedItem.id == 1 ? true : false"
-                            ></v-autocomplete>
+                            >
+                              <template v-slot:selection="data">
+                                <v-chip
+                                  color="secondary"
+                                  v-bind="data.attrs"
+                                  :input-value="data.selected"
+                                  @click="data.select"
+                                >
+                                  {{ data.item.name }}
+                                </v-chip>
+                              </template>
+                            </v-autocomplete>
                           </v-col>
                         </v-row>
                         <v-row>
@@ -156,9 +171,13 @@
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
-                <v-dialog v-model="dialogPermission" max-width="700px" persistent>
+                <v-dialog
+                  v-model="dialogPermission"
+                  max-width="700px"
+                  persistent
+                >
                   <v-card>
-                    <v-card-title>
+                    <v-card-title class="mb-0 pb-0">
                       <span class="headline">Roles</span>
                       <v-spacer></v-spacer>
                       <v-icon @click="dialogPermission = false"
@@ -212,7 +231,12 @@
           >
             <template v-slot:item.roles="{ item }">
               <span v-for="(role, key) in item.roles">
-                <v-chip small color="secondary" v-if="key == 0" @click="viewRoles(item.roles)">
+                <v-chip
+                  small
+                  color="secondary"
+                  v-if="key == 0"
+                  @click="viewRoles(item.roles)"
+                >
                   {{ role.name }}
                 </v-chip>
 
@@ -249,7 +273,12 @@
               >
                 mdi-delete
               </v-icon>
-              <v-icon small color="info" @click="editUser(item)" v-if="item.id == 1">
+              <v-icon
+                small
+                color="info"
+                @click="editUser(item)"
+                v-if="item.id == 1"
+              >
                 mdi-eye
               </v-icon>
             </template>
@@ -285,7 +314,7 @@ export default {
   validations: {
     editedItem: {
       name: { required },
-      email: { required, email }
+      email: { required, email },
     },
     password: { required, minLength: minLength(8) },
     confirm_password: { required, sameAsPassword: sameAs("password") },
@@ -360,16 +389,11 @@ export default {
         },
       }).then(
         (response) => {
-          
           this.users = response.data.users;
           this.loading = false;
         },
         (error) => {
-          // if unauthenticated (401)
-          if (error.response.status == "401") {
-            localStorage.removeItem("access_token");
-            this.$router.push({ name: "login" });
-          }
+          this.isUnauthorized(error);
         }
       );
     },
@@ -379,9 +403,14 @@ export default {
         headers: {
           Authorization: "Bearer " + access_token,
         },
-      }).then((response) => {
-        this.roles = response.data.roles;
-      });
+      }).then(
+        (response) => {
+          this.roles = response.data.roles;
+        },
+        (error) => {
+          this.isUnauthorized(error);
+        }
+      );
     },
 
     editUser(item) {
@@ -407,14 +436,13 @@ export default {
         },
       }).then(
         (response) => {
-          if(response.data.success)
-          {
+          if (response.data.success) {
             // send data to Sockot.IO Server
-            this.$socket.emit("sendData", {action: 'user-delete'});
+            this.$socket.emit("sendData", { action: "user-delete" });
           }
         },
         (error) => {
-          console.log(error);
+          this.isUnauthorized(error);
         }
       );
     },
@@ -481,11 +509,15 @@ export default {
         this.overlay = true;
         let roles = [];
 
-        if (this.editedItem.roles.length) {
-          this.editedItem.roles.forEach((value, index) => {
+        this.editedItem.roles.forEach((value) => {
+          // if value is object with role name
+          if (value.name) {
             roles.push(value.name);
-          });
-        }
+          } else {
+            // else get the array of role name
+            roles.push(value);
+          }
+        });
 
         this.editedItem.roles = roles;
 
@@ -505,9 +537,8 @@ export default {
           }).then(
             (response) => {
               if (response.data.success) {
-
                 // send data to Sockot.IO Server
-                this.$socket.emit("sendData", {action: 'user-edit'});
+                this.$socket.emit("sendData", { action: "user-edit" });
 
                 Object.assign(this.users[this.editedIndex], response.data.user);
                 this.showAlert();
@@ -517,7 +548,8 @@ export default {
               this.disabled = false;
             },
             (error) => {
-              console.log(error);
+              this.isUnauthorized(error);
+
               this.overlay = false;
               this.disabled = false;
             }
@@ -534,11 +566,9 @@ export default {
             },
           }).then(
             (response) => {
-
               if (response.data.success) {
-
                 // send data to Sockot.IO Server
-                this.$socket.emit("sendData", {action: 'user-create'});
+                this.$socket.emit("sendData", { action: "user-create" });
 
                 this.showAlert();
                 this.close();
@@ -550,7 +580,8 @@ export default {
               this.disabled = false;
             },
             (error) => {
-              console.log(error);
+              this.isUnauthorized(error);
+
               this.overlay = false;
               this.disabled = false;
             }
@@ -592,20 +623,32 @@ export default {
         headers: {
           Authorization: "Bearer " + access_token,
         },
-      }).then((response) => {
-        // console.log(response.data);
-        localStorage.removeItem("user_permissions");
-        localStorage.removeItem("user_roles");
-        localStorage.setItem(
-          "user_permissions",
-          JSON.stringify(response.data.user_permissions)
-        );
-        localStorage.setItem(
-          "user_roles",
-          JSON.stringify(response.data.user_roles)
-        );
-        this.getRolesPermissions();
-      });
+      }).then(
+        (response) => {
+          // console.log(response.data);
+          localStorage.removeItem("user_permissions");
+          localStorage.removeItem("user_roles");
+          localStorage.setItem(
+            "user_permissions",
+            JSON.stringify(response.data.user_permissions)
+          );
+          localStorage.setItem(
+            "user_roles",
+            JSON.stringify(response.data.user_roles)
+          );
+          this.getRolesPermissions();
+        },
+        (error) => {
+          this.isUnauthorized(error);
+        }
+      );
+    },
+
+    isUnauthorized(error) {
+      // if unauthenticated (401)
+      if (error.response.status == "401") {
+        this.$router.push({ name: "unauthorize" });
+      }
     },
 
     getRolesPermissions() {
@@ -621,9 +664,7 @@ export default {
       // hide column actions if user has no permission
       if (!this.permissions.user_edit && !this.permissions.user_delete) {
         this.headers[5].align = " d-none";
-      }
-      else
-      {
+      } else {
         this.headers[5].align = "";
       }
 
@@ -631,10 +672,8 @@ export default {
       if (!this.permissions.user_list && !this.permissions.user_create) {
         this.$router.push("/unauthorize").catch(() => {});
       }
-      
     },
     websocket() {
-
       // Socket.IO fetch data
       this.$options.sockets.sendData = (data) => {
         let action = data.action;
@@ -648,16 +687,22 @@ export default {
           this.userRolesPermissions();
         }
 
-        if(action == 'user-create' || action == 'user-edit' || action == 'user-delete' || action == 'login')
-        {
+        if (
+          action == "user-create" ||
+          action == "user-edit" ||
+          action == "user-delete" ||
+          action == "login"
+        ) {
           this.getUser();
         }
-      }
+      };
     },
   },
   computed: {
     formTitle() {
-      return this.editedItem == this.editedIndex === -1 ? "New User" : "Edit User";
+      return (this.editedItem == this.editedIndex) === -1
+        ? "New User"
+        : "Edit User";
     },
     nameErrors() {
       const errors = [];

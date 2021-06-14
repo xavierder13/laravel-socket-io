@@ -4,6 +4,7 @@ import Home from './views/Home.vue';
 import Login from './auth/Login.vue';
 import Dashboard from './views/dashboard/Dashboard.vue';
 import UserIndex from './views/user/UserIndex.vue';
+import UserCreate from './views/user/UserCreate.vue';
 import Permission from './views/permission/PermissionIndex.vue';
 import Role from './views/role/RoleIndex.vue';
 import ActivityLogs from './views/activity_logs/ActivityLogs.vue';
@@ -25,14 +26,6 @@ const routes = [
         beforeEnter(to, from, next)
         { 
           let user_permissions = JSON.parse(localStorage.getItem("user_permissions"));
-          // if(user_permissions.includes('project-list') || user_permissions.includes('project-create'))
-          // {
-          //   next();
-          // }
-          // else
-          // {
-          //   next('/unauthorize');
-          // }
           next();
         }
       },
@@ -43,7 +36,7 @@ const routes = [
         beforeEnter(to, from, next)
         { 
           let user_permissions = JSON.parse(localStorage.getItem("user_permissions"));
-          if(user_permissions.includes('user-list') || user_permissions.includes('user-create'))
+          if(user_permissions.includes('user-list'))
           {
             next();
           }
@@ -54,13 +47,31 @@ const routes = [
         }
       },
       {
+        path: '/user/create',
+        name: 'user.create',
+        component: UserCreate,
+        beforeEnter(to, from, next)
+        { 
+          let user_permissions = JSON.parse(localStorage.getItem("user_permissions"));
+          if(user_permissions.includes('user-create'))
+          {
+            next();
+          }
+          else
+          {
+            next('/unauthorize');
+          }
+          next();
+        }
+      },
+      {
         path: '/permission/index',
         name: 'permission.index',
         component: Permission,
         beforeEnter(to, from, next)
         { 
           let user_permissions = JSON.parse(localStorage.getItem("user_permissions"));
-          if(user_permissions.includes('permission-list') || user_permissions.includes('permission-create'))
+          if(user_permissions.includes('permission-list'))
           {
             next();
           }
