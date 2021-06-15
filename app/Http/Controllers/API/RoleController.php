@@ -25,7 +25,7 @@ class RoleController extends Controller
     public function create()
     {   
         $permissions = Permission::all();
-        return view('pages.roles.create', compact('permissions'));
+        return response()->json(['permissions' => $permissions], 200);
     }
 
 

@@ -390,22 +390,8 @@ export default {
       }).then(
         (response) => {
           this.users = response.data.users;
-          this.loading = false;
-        },
-        (error) => {
-          this.isUnauthorized(error);
-        }
-      );
-    },
-
-    getRole() {
-      Axios.get("/api/role/index", {
-        headers: {
-          Authorization: "Bearer " + access_token,
-        },
-      }).then(
-        (response) => {
           this.roles = response.data.roles;
+          this.loading = false;
         },
         (error) => {
           this.isUnauthorized(error);
@@ -757,7 +743,7 @@ export default {
   mounted() {
     access_token = localStorage.getItem("access_token");
     this.getUser();
-    this.getRole();
+
     this.userRolesPermissions();
     this.websocket();
   },

@@ -43,10 +43,8 @@
         <v-list-group
           no-action
           v-if="
-            permissions.role_list ||
-            permissions.role_create ||
-            permissions.permission_list ||
-            permissions.permission_create
+            permissions.user_list ||
+            permissions.user_create
           "
         >
           <!-- List Group Icon-->
@@ -279,10 +277,9 @@ export default {
     hasRole(roles) {
       user_roles = JSON.parse(localStorage.getItem("user_roles"));
       let hasRole = false;
+
       roles.forEach((value, index) => {
-        if (user_roles.includes(value)) {
-          hasRole = true;
-        }
+          hasRole = user_roles.includes(value);
       });
 
       return hasRole;
@@ -293,9 +290,7 @@ export default {
       let hasPermission = false;
 
       permissions.forEach((value, index) => {
-        if (user_permissions.includes(value)) {
-          hasPermission = true;
-        }
+        hasPermission = user_permissions.includes(value);       
       });
 
       return hasPermission;

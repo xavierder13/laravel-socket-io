@@ -20,8 +20,16 @@ class UserController extends Controller
     public function index()
     {   
         $users = User::with('roles')->with('roles.permissions')->get();
+        $roles = Role::with('permissions')->orderBy('id', 'Asc')->get();
 
-        return response()->json(['users' => $users], 200);
+        return response()->json(['users' => $users, 'roles' => $roles], 200);
+    }
+
+    public function create() 
+    {
+        $roles = Role::with('permissions')->orderBy('id', 'Asc')->get();
+
+        return response()->json(['roles' => $roles], 200);
     }
 
     public function store(Request $request)

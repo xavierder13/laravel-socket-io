@@ -65,5 +65,6 @@ class Kernel extends HttpKernel
         'user.maintenance' => \App\Http\Middleware\UserMaintenance::class,
         'permission.maintenance' => \App\Http\Middleware\PermissionMaintenance::class,
         'role.maintenance' => \App\Http\Middleware\RoleMaintenance::class,
+        'activity.logs' => \App\Http\Middleware\ActivityLogs::class,
     ];
 }

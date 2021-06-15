@@ -204,7 +204,7 @@ export default {
 
   methods: {
     getRole() {
-      Axios.get("/api/role/index", {
+      Axios.get("/api/user/create", {
         headers: {
           Authorization: "Bearer " + access_token,
         },

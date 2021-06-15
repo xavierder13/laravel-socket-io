@@ -48,6 +48,11 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth:api', 'user.maintenance
         'as' => 'user.index',
     ]);
 
+    Route::get('/create', [
+        'uses' => 'API\UserController@create',
+        'as' => 'user.create',
+    ]);
+
     Route::post('/store', [
         'uses' => 'API\UserController@store',
         'as' => 'user.store',
@@ -134,7 +139,7 @@ Route::group(['prefix' => 'role', 'middleware' => ['auth:api', 'role.maintenance
 });
 
 //Activity Logs
-Route::group(['prefix' => 'activity_logs', 'middleware' => ['auth:api']], function(){
+Route::group(['prefix' => 'activity_logs', 'middleware' => ['auth:api', 'activity.logs']], function(){
     Route::get('/index', [
         'uses' => 'API\ActivityLogController@activity_logs',
         'as' => 'activity_logs.index',
