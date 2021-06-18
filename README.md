@@ -10,9 +10,13 @@ A template for starter projects.
       <li>Github CLI: <code>gh repo clone monielly/laravel-socket-io</code></li>
     </ul>
   </li>
-  <li><b>Create a blank Database.</b></li>
+  <li><b>Install PHP dependencies: <code>$ composer install</code></b></li> 
+  <li><b>Create a blank Database in your backend server.</b></li>
+  <li><b>Create .env file from .env.example: <code>$ sudo cp .env.example .env</code></b></li>
+  <li><b>Generate key by running this command:</b> <code>php artisan key:generate</code></li>
+  <li><b>Generate passport key for api by running this command:</b> <code>php artisan passport:install</code></li>
   <li><b>Migrate the db-migrations by running this command:</b> <code>php artisan migrate</code></li>
-  <li><b>Run the db-seeder with this command:</b> 
+  <li><b>Run the db-seeder with this command:</b>
     <ul>
       <li><code>php artisan db:seed</code></li> or 
       <li><code>php artisan db:seed --class=CreateAdminUserSeeder</code></li> and 
