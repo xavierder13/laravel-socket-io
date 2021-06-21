@@ -22,98 +22,32 @@ const routes = [
       {
         path: '/dashboard',
         name: 'dashboard',
-        component: Dashboard,
-        beforeEnter(to, from, next)
-        { 
-          let user_permissions = JSON.parse(localStorage.getItem("user_permissions"));
-          next();
-        }
+        component: Dashboard
       },
       {
         path: '/user/index',
         name: 'user.index',
-        component: UserIndex,
-        beforeEnter(to, from, next)
-        { 
-          let user_permissions = JSON.parse(localStorage.getItem("user_permissions"));
-          if(user_permissions.includes('user-list'))
-          {
-            next();
-          }
-          else
-          {
-            next('/unauthorize');
-          }
-        }
+        component: UserIndex
       },
       {
         path: '/user/create',
         name: 'user.create',
-        component: UserCreate,
-        beforeEnter(to, from, next)
-        { 
-          let user_permissions = JSON.parse(localStorage.getItem("user_permissions"));
-          if(user_permissions.includes('user-create'))
-          {
-            next();
-          }
-          else
-          {
-            next('/unauthorize');
-          }
-          next();
-        }
+        component: UserCreate
       },
       {
         path: '/permission/index',
         name: 'permission.index',
-        component: Permission,
-        beforeEnter(to, from, next)
-        { 
-          let user_permissions = JSON.parse(localStorage.getItem("user_permissions"));
-          if(user_permissions.includes('permission-list'))
-          {
-            next();
-          }
-          else
-          {
-            next('/unauthorize');
-          }
-        }
+        component: Permission
       },
       {
         path: '/role/index',
         name: 'role.index',
-        component: Role,
-        beforeEnter(to, from, next)
-        { 
-          let user_permissions = JSON.parse(localStorage.getItem("user_permissions"));
-          if(user_permissions.includes('role-list') || user_permissions.includes('role-create'))
-          {
-            next();
-          }
-          else
-          {
-            next('/unauthorize');
-          }
-        }
+        component: Role
       },
       {
         path: '/activity_logs',
         name: 'activity_logs',
-        component: ActivityLogs,
-        beforeEnter(to, from, next)
-        { 
-          let user_permissions = JSON.parse(localStorage.getItem("user_permissions"));
-          if(user_permissions.includes('activity-logs'))
-          {
-            next();
-          }
-          else
-          {
-            next('/unauthorize');
-          }
-        }
+        component: ActivityLogs
       },
       {
         path: '/unauthorize',

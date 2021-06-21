@@ -102,6 +102,13 @@ class PermissionController extends Controller
         $permission->name = $request->get('name');
         $permission->save();
 
+        // Administrator Role
+        $role = Role::find(1);
+
+        $permissions = Permission::pluck('id','id')->all();
+
+        $role->syncPermissions($permissions);
+
         $user_roles = Auth::user()->roles->pluck('name')->all();
 
         $user_permissions = Auth::user()->getAllPermissions()->pluck('name');

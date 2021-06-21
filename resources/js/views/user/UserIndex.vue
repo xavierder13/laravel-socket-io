@@ -290,8 +290,6 @@
 </template>
 <script>
 let access_token;
-let user_permissions;
-let user_roles;
 
 import Axios from "axios";
 import { validationMixin } from "vuelidate";
@@ -369,25 +367,18 @@ export default {
       },
       password: "",
       confirm_password: "",
-      permissions: {
-        user_list: false,
-        user_create: false,
-        user_edit: false,
-        user_delete: false,
-      },
+      permissions: Home.data().permissions,
       loading: true,
       passwordHasChanged: false,
+      user_permissions: [],
+      user_roles: [],
     };
   },
 
   methods: {
     getUser() {
       this.loading = true;
-      Axios.get("/api/user/index", {
-        headers: {
-          Authorization: "Bearer " + access_token,
-        },
-      }).then(
+      Axios.get("/api/user/index").then(
         (response) => {
           this.users = response.data.users;
           this.roles = response.data.roles;
@@ -416,11 +407,7 @@ export default {
     deleteUser(user_id) {
       const data = { user_id: user_id };
 
-      Axios.post("/api/user/delete", data, {
-        headers: {
-          Authorization: "Bearer " + access_token,
-        },
-      }).then(
+      Axios.post("/api/user/delete", data).then(
         (response) => {
           if (response.data.success) {
             // send data to Sockot.IO Server
@@ -516,11 +503,7 @@ export default {
           const data = this.editedItem;
           const user_id = this.editedItem.id;
 
-          Axios.post("/api/user/update/" + user_id, data, {
-            headers: {
-              Authorization: "Bearer " + access_token,
-            },
-          }).then(
+          Axios.post("/api/user/update/" + user_id, data).then(
             (response) => {
               if (response.data.success) {
                 // send data to Sockot.IO Server
@@ -546,11 +529,7 @@ export default {
 
           const data = this.editedItem;
 
-          Axios.post("/api/user/store", data, {
-            headers: {
-              Authorization: "Bearer " + access_token,
-            },
-          }).then(
+          Axios.post("/api/user/store", data).then(
             (response) => {
               if (response.data.success) {
                 // send data to Sockot.IO Server
@@ -605,23 +584,10 @@ export default {
       this.roles_permissions = roles;
     },
     userRolesPermissions() {
-      Axios.get("api/user/roles_permissions", {
-        headers: {
-          Authorization: "Bearer " + access_token,
-        },
-      }).then(
+      Axios.get("api/user/roles_permissions").then(
         (response) => {
-          // console.log(response.data);
-          localStorage.removeItem("user_permissions");
-          localStorage.removeItem("user_roles");
-          localStorage.setItem(
-            "user_permissions",
-            JSON.stringify(response.data.user_permissions)
-          );
-          localStorage.setItem(
-            "user_roles",
-            JSON.stringify(response.data.user_roles)
-          );
+          this.user_permissions = response.data.user_permissions;
+          this.user_roles = response.data.user_roles;
           this.getRolesPermissions();
         },
         (error) => {
@@ -638,12 +604,12 @@ export default {
     },
 
     getRolesPermissions() {
-      this.permissions.user_list = Home.methods.hasPermission(["user-list"]);
-      this.permissions.user_create = Home.methods.hasPermission([
+      this.permissions.user_list = this.hasPermission(["user-list"]);
+      this.permissions.user_create = this.hasPermission([
         "user-create",
       ]);
-      this.permissions.user_edit = Home.methods.hasPermission(["user-edit"]);
-      this.permissions.user_delete = Home.methods.hasPermission([
+      this.permissions.user_edit = this.hasPermission(["user-edit"]);
+      this.permissions.user_delete = this.hasPermission([
         "user-delete",
       ]);
 
@@ -658,6 +624,27 @@ export default {
       if (!this.permissions.user_list && !this.permissions.user_create) {
         this.$router.push("/unauthorize").catch(() => {});
       }
+    },
+    hasRole(roles) {
+
+      let hasRole = false;
+
+      roles.forEach((value, index) => {
+          hasRole = this.user_roles.includes(value);
+      });
+
+      return hasRole;
+    },
+
+    hasPermission(permissions) {
+    
+      let hasPermission = false;
+
+      permissions.forEach((value, index) => {
+        hasPermission = this.user_permissions.includes(value);       
+      });
+
+      return hasPermission;
     },
     websocket() {
       // Socket.IO fetch data
@@ -741,7 +728,7 @@ export default {
     },
   },
   mounted() {
-    access_token = localStorage.getItem("access_token");
+    Axios.defaults.headers.common["Authorization"] = "Bearer " + localStorage.getItem("access_token");
     this.getUser();
 
     this.userRolesPermissions();
