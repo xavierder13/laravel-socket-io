@@ -233,11 +233,7 @@ export default {
   methods: {
     getRole() {
       this.loading = true;
-      Axios.get("/api/role/index", {
-        headers: {
-          Authorization: "Bearer " + access_token,
-        },
-      }).then(
+      Axios.get("/api/role/index").then(
         (response) => {
           this.roles = response.data.roles;
           this.permissions = response.data.permissions;
@@ -267,11 +263,7 @@ export default {
     deleteRole(roleid) {
       const data = { roleid: roleid };
       this.loading = true;
-      Axios.post("/api/role/delete", data, {
-        headers: {
-          Authorization: "Bearer " + access_token,
-        },
-      }).then(
+      Axios.post("/api/role/delete", data).then(
         (response) => {
           this.loading = false;
         },
@@ -350,11 +342,7 @@ export default {
         if (this.editedIndex > -1) {
           const roleid = this.editedRole.id;
 
-          Axios.post("/api/role/update/" + roleid, data, {
-            headers: {
-              Authorization: "Bearer " + access_token,
-            },
-          }).then(
+          Axios.post("/api/role/update/" + roleid, data).then(
             (response) => {
               if (response.data.success) {
                 // send data to Sockot.IO Server
@@ -378,11 +366,7 @@ export default {
             }
           );
         } else {
-          Axios.post("/api/role/store", data, {
-            headers: {
-              Authorization: "Bearer " + access_token,
-            },
-          }).then(
+          Axios.post("/api/role/store", data).then(
             (response) => {
               if (response.data.success) {
                 // send data to Sockot.IO Server
@@ -428,11 +412,7 @@ export default {
     },
 
     userRolesPermissions() {
-      Axios.get("/api/user/roles_permissions", {
-        headers: {
-          Authorization: "Bearer " + access_token,
-        },
-      }).then(
+      Axios.get("/api/user/roles_permissions").then(
         (response) => {
           this.user_permissions = response.data.user_permissions;
           this.user_roles = response.data.user_roles;
@@ -521,7 +501,7 @@ export default {
     },
   },
   mounted() {
-    access_token = localStorage.getItem("access_token");
+    Axios.defaults.headers.common["Authorization"] = "Bearer " + localStorage.getItem("access_token");
     this.getRole();
     this.userRolesPermissions();
     this.websocket();
