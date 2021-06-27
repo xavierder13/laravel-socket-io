@@ -2,7 +2,7 @@
   <v-app>
     <!-- Navbar -->
     <v-app-bar dense dark app>
-      <v-btn icon @click.stop="mini = !mini">
+      <v-btn icon @click.stop="drawer = !drawer">
         <v-app-bar-nav-icon></v-app-bar-nav-icon>
       </v-btn>
 
@@ -15,7 +15,7 @@
     </v-app-bar>
 
     <!-- Sidebar -->
-    <v-navigation-drawer v-model="drawer" :mini-variant.sync="mini" dark app>
+    <v-navigation-drawer v-model="drawer" dark app>
       <v-list>
         <v-list-item class="px-2">
           <v-list-item-avatar class="rounded-5" height="60" width="60">
