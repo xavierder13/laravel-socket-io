@@ -230,7 +230,7 @@ export default {
           const permissionid = item.id;
           const index = this.permissions.indexOf(item);
 
-          //Call delete Patient function
+          //Call delete Permission function
           this.deletePermission(permissionid);
 
           //Remove item from array permissions

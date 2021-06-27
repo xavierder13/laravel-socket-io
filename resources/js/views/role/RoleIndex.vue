@@ -301,7 +301,7 @@ export default {
           const roleid = item.id;
           const index = this.roles.indexOf(item);
 
-          //Call delete Patient function
+          //Call delete Role function
           this.deleteRole(roleid);
 
           //Remove item from array permissions
