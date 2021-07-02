@@ -125,9 +125,6 @@
   </div>
 </template>
 <script>
-let access_token;
-let user_permissions;
-let user_roles;
 
 import Axios from "axios";
 import { validationMixin } from "vuelidate";
@@ -138,12 +135,8 @@ import {
   minLength,
   sameAs,
 } from "vuelidate/lib/validators";
-import Home from "../Home.vue";
 
 export default {
-  components: {
-    Home,
-  },
 
   mixins: [validationMixin],
 
@@ -175,7 +168,6 @@ export default {
       users: [],
       roles: [],
       roles_permissions: [],
-      permissions: Home.data().permissions,
       editedIndex: -1,
       editedItem: {
         name: "",
@@ -193,9 +185,7 @@ export default {
         roles: [],
         active: "Y",
       },
-      permissions: Home.data().permissions,
-      user_permissions: [],
-      user_roles: [],
+
     };
   },
 
@@ -260,67 +250,11 @@ export default {
       this.switch1 = true;
     },
 
-    userRolesPermissions() {
-      Axios.get("api/user/roles_permissions").then(
-        (response) => {
-          this.user_permissions = response.data.user_permissions;
-          this.user_roles = response.data.user_roles;
-          this.getRolesPermissions();
-        },
-        (error) => {
-          this.isUnauthorized(error);
-        }
-      );
-    },
-
     isUnauthorized(error) {
       // if unauthenticated (401)
       if (error.response.status == "401") {
         this.$router.push({ name: "unauthorize" });
       }
-    },
-
-    getRolesPermissions() {
-      this.permissions.user_create = this.hasPermission(["user-create"]);
-
-      // if user is not authorize
-      if (!this.permissions.user_create) {
-        this.$router.push("/unauthorize").catch(() => {});
-      }
-    },
-    hasRole(roles) {
-      let hasRole = false;
-
-      roles.forEach((value, index) => {
-        hasRole = this.user_roles.includes(value);
-      });
-
-      return hasRole;
-    },
-
-    hasPermission(permissions) {
-      let hasPermission = false;
-
-      permissions.forEach((value, index) => {
-        hasPermission = this.user_permissions.includes(value);
-      });
-
-      return hasPermission;
-    },
-    websocket() {
-      // Socket.IO fetch data
-      this.$options.sockets.sendData = (data) => {
-        let action = data.action;
-        if (
-          action == "user-edit" ||
-          action == "role-edit" ||
-          action == "role-delete" ||
-          action == "permission-create" ||
-          action == "permission-delete"
-        ) {
-          this.userRolesPermissions();
-        }
-      };
     },
   },
   computed: {
@@ -370,8 +304,6 @@ export default {
   mounted() {
     Axios.defaults.headers.common["Authorization"] = "Bearer " + localStorage.getItem("access_token");
     this.getRole();
-    this.userRolesPermissions();
-    this.websocket();
   },
 };
 </script>

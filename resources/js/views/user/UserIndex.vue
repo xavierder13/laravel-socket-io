@@ -27,7 +27,7 @@
               label="Search"
               single-line
               hide-details
-              v-if="permissions.user_list"
+              v-if="userPermissions.user_list"
             ></v-text-field>
             <template>
               <v-toolbar flat>
@@ -38,7 +38,7 @@
                   dark
                   class="mb-2"
                   @click="clear() + (dialog = true)"
-                  v-if="permissions.user_create"
+                  v-if="userPermissions.user_create"
                 >
                   <v-icon>mdi-plus</v-icon>
                 </v-btn>
@@ -227,7 +227,7 @@
             :search="search"
             :loading="loading"
             loading-text="Loading... Please wait"
-            v-if="permissions.user_list"
+            v-if="userPermissions.user_list"
           >
             <template v-slot:item.roles="{ item }">
               <span v-for="(role, key) in item.roles">
@@ -261,7 +261,7 @@
                 class="mr-2"
                 color="green"
                 @click="editUser(item)"
-                v-if="permissions.user_edit && item.id != 1"
+                v-if="userPermissions.user_edit && item.id != 1"
               >
                 mdi-pencil
               </v-icon>
@@ -269,7 +269,7 @@
                 small
                 color="red"
                 @click="showConfirmAlert(item)"
-                v-if="permissions.user_delete && item.id != 1"
+                v-if="userPermissions.user_delete && item.id != 1"
               >
                 mdi-delete
               </v-icon>
@@ -289,7 +289,6 @@
   </div>
 </template>
 <script>
-let access_token;
 
 import Axios from "axios";
 import { validationMixin } from "vuelidate";
@@ -300,12 +299,10 @@ import {
   minLength,
   sameAs,
 } from "vuelidate/lib/validators";
-import Home from "../Home.vue";
+
+import { mapState } from 'vuex';  
 
 export default {
-  components: {
-    Home,
-  },
 
   mixins: [validationMixin],
 
@@ -349,7 +346,6 @@ export default {
       users: [],
       roles: [],
       roles_permissions: [],
-      permissions: Home.data().permissions,
       editedIndex: -1,
       editedItem: {
         name: "",
@@ -367,11 +363,8 @@ export default {
       },
       password: "",
       confirm_password: "",
-      permissions: Home.data().permissions,
       loading: true,
       passwordHasChanged: false,
-      user_permissions: [],
-      user_roles: [],
     };
   },
 
@@ -583,18 +576,6 @@ export default {
       this.dialogPermission = true;
       this.roles_permissions = roles;
     },
-    userRolesPermissions() {
-      Axios.get("api/user/roles_permissions").then(
-        (response) => {
-          this.user_permissions = response.data.user_permissions;
-          this.user_roles = response.data.user_roles;
-          this.getRolesPermissions();
-        },
-        (error) => {
-          this.isUnauthorized(error);
-        }
-      );
-    },
 
     isUnauthorized(error) {
       // if unauthenticated (401)
@@ -603,73 +584,21 @@ export default {
       }
     },
 
-    getRolesPermissions() {
-      this.permissions.user_list = this.hasPermission(["user-list"]);
-      this.permissions.user_create = this.hasPermission([
-        "user-create",
-      ]);
-      this.permissions.user_edit = this.hasPermission(["user-edit"]);
-      this.permissions.user_delete = this.hasPermission([
-        "user-delete",
-      ]);
-
-      // hide column actions if user has no permission
-      if (!this.permissions.user_edit && !this.permissions.user_delete) {
-        this.headers[5].align = " d-none";
-      } else {
-        this.headers[5].align = "";
-      }
-
-      // if user is not authorize
-      if (!this.permissions.user_list && !this.permissions.user_create) {
-        this.$router.push("/unauthorize").catch(() => {});
-      }
-    },
-    hasRole(roles) {
-
-      let hasRole = false;
-
-      roles.forEach((value, index) => {
-          hasRole = this.user_roles.includes(value);
-      });
-
-      return hasRole;
-    },
-
-    hasPermission(permissions) {
-    
-      let hasPermission = false;
-
-      permissions.forEach((value, index) => {
-        hasPermission = this.user_permissions.includes(value);       
-      });
-
-      return hasPermission;
-    },
     websocket() {
       // Socket.IO fetch data
       this.$options.sockets.sendData = (data) => {
         let action = data.action;
-        if (
-          action == "user-edit" ||
-          action == "role-edit" ||
-          action == "role-delete" ||
-          action == "permission-create" ||
-          action == "permission-delete"
-        ) {
-          this.userRolesPermissions();
-        }
 
         if (
           action == "user-create" ||
           action == "user-edit" ||
-          action == "user-delete" ||
-          action == "login"
+          action == "user-delete"
         ) {
           this.getUser();
         }
       };
     },
+
   },
   computed: {
     formTitle() {
@@ -726,12 +655,11 @@ export default {
         }
       }
     },
+    ...mapState("userRolesPermissions", ["userRoles", "userPermissions"]),
   },
   mounted() {
     Axios.defaults.headers.common["Authorization"] = "Bearer " + localStorage.getItem("access_token");
     this.getUser();
-
-    this.userRolesPermissions();
     this.websocket();
   },
 };

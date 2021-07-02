@@ -102,6 +102,7 @@ export default {
       !this.$v.password.required && errors.push("Password is required.");
       return errors;
     },
+
   },
   methods: {
     login() {
@@ -112,25 +113,25 @@ export default {
         const email = this.email;
         const password = this.password;
         const data = { email: email, password: password };
-
-        Axios.post("/api/auth/login", data).then(
-          (response) => {
-            if (response.data.access_token) {
-              localStorage.setItem("access_token", response.data.access_token);
-              this.$router.push("/").catch((e) => {});
-              this.clear();
-              this.email = null;
-              this.password = null;
-              this.overlay = false;
-            } else {
-              this.isInvalid = true;
-              this.overlay = false;
-            }
-          },
-          (error) => {
-            console.log(error);
-          }
-        );
+        this.$store.dispatch('auth/login', data);
+        // Axios.post("/api/auth/login", data).then(
+        //   (response) => {
+        //     if (response.data.access_token) {
+        //       localStorage.setItem("access_token", response.data.access_token);
+        //       this.$router.push("/").catch((e) => {});
+        //       this.clear();
+        //       this.email = null;
+        //       this.password = null;
+        //       this.overlay = false;
+        //     } else {
+        //       this.isInvalid = true;
+        //       this.overlay = false;
+        //     }
+        //   },
+        //   (error) => {
+        //     console.log(error);
+        //   }
+        // );
       }
     },
 
