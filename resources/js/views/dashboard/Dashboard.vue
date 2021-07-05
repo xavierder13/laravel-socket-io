@@ -19,7 +19,7 @@
 </template>
 <script>
 
-import Axios from "axios";
+import axios from "axios";
 import { validationMixin } from "vuelidate";
 import { required, maxLength, email } from "vuelidate/lib/validators";
 import { mapState } from 'vuex';
@@ -100,7 +100,7 @@ export default {
     ...mapState("userRolesPermissions", ["userRoles", "userPermissions"]),
   },
   mounted() {
-    Axios.defaults.headers.common["Authorization"] = "Bearer " + localStorage.getItem("access_token");
+    axios.defaults.headers.common["Authorization"] = "Bearer " + localStorage.getItem("access_token");
 
     this.websocket();
   },

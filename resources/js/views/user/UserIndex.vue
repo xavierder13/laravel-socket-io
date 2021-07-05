@@ -290,7 +290,7 @@
 </template>
 <script>
 
-import Axios from "axios";
+import axios from "axios";
 import { validationMixin } from "vuelidate";
 import {
   required,
@@ -371,7 +371,7 @@ export default {
   methods: {
     getUser() {
       this.loading = true;
-      Axios.get("/api/user/index").then(
+      axios.get("/api/user/index").then(
         (response) => {
           this.users = response.data.users;
           this.roles = response.data.roles;
@@ -400,7 +400,7 @@ export default {
     deleteUser(user_id) {
       const data = { user_id: user_id };
 
-      Axios.post("/api/user/delete", data).then(
+      axios.post("/api/user/delete", data).then(
         (response) => {
           if (response.data.success) {
             // send data to Sockot.IO Server
@@ -496,7 +496,7 @@ export default {
           const data = this.editedItem;
           const user_id = this.editedItem.id;
 
-          Axios.post("/api/user/update/" + user_id, data).then(
+          axios.post("/api/user/update/" + user_id, data).then(
             (response) => {
               if (response.data.success) {
                 // send data to Sockot.IO Server
@@ -522,7 +522,7 @@ export default {
 
           const data = this.editedItem;
 
-          Axios.post("/api/user/store", data).then(
+          axios.post("/api/user/store", data).then(
             (response) => {
               if (response.data.success) {
                 // send data to Sockot.IO Server
@@ -658,7 +658,7 @@ export default {
     ...mapState("userRolesPermissions", ["userRoles", "userPermissions"]),
   },
   mounted() {
-    Axios.defaults.headers.common["Authorization"] = "Bearer " + localStorage.getItem("access_token");
+    axios.defaults.headers.common["Authorization"] = "Bearer " + localStorage.getItem("access_token");
     this.getUser();
     this.websocket();
   },

@@ -171,7 +171,7 @@ let access_token;
 let user_permissions;
 let user_roles;
 
-import Axios from "axios";
+import axios from "axios";
 import { validationMixin } from "vuelidate";
 import { required, maxLength, email } from "vuelidate/lib/validators";
 import { mapState } from 'vuex';  
@@ -223,7 +223,7 @@ export default {
   methods: {
     getRole() {
       this.loading = true;
-      Axios.get("/api/role/index").then(
+      axios.get("/api/role/index").then(
         (response) => {
           this.roles = response.data.roles;
           this.permissions = response.data.permissions;
@@ -253,7 +253,7 @@ export default {
     deleteRole(roleid) {
       const data = { roleid: roleid };
       this.loading = true;
-      Axios.post("/api/role/delete", data).then(
+      axios.post("/api/role/delete", data).then(
         (response) => {
           this.loading = false;
         },
@@ -332,7 +332,7 @@ export default {
         if (this.editedIndex > -1) {
           const roleid = this.editedRole.id;
 
-          Axios.post("/api/role/update/" + roleid, data).then(
+          axios.post("/api/role/update/" + roleid, data).then(
             (response) => {
               if (response.data.success) {
                 // send data to Sockot.IO Server
@@ -351,7 +351,7 @@ export default {
             }
           );
         } else {
-          Axios.post("/api/role/store", data).then(
+          axios.post("/api/role/store", data).then(
             (response) => {
               if (response.data.success) {
                 // send data to Sockot.IO Server
@@ -427,7 +427,7 @@ export default {
     ...mapState("userRolesPermissions", ["userRoles", "userPermissions"]),
   },
   mounted() {
-    Axios.defaults.headers.common["Authorization"] = "Bearer " + localStorage.getItem("access_token");
+    axios.defaults.headers.common["Authorization"] = "Bearer " + localStorage.getItem("access_token");
     this.getRole();
     this.websocket();
   },

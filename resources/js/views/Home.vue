@@ -116,7 +116,7 @@
 
 <script>
 
-import Axios from "axios";
+import axios from "axios";
 import { mapState, mapActions } from "vuex";
 
 export default {
@@ -150,7 +150,7 @@ export default {
     },
     logout() {
       this.overlay = true;
-      Axios.get("/api/auth/logout").then(
+      axios.get("/api/auth/logout").then(
         (response) => {
           if (response.data.success) {
             this.overlay = false;
@@ -183,7 +183,7 @@ export default {
   },
 
   mounted() {
-    Axios.defaults.headers.common["Authorization"] =
+    axios.defaults.headers.common["Authorization"] =
       "Bearer " + localStorage.getItem("access_token");
     this.userRolesPermissions();
     this.getUser();

@@ -126,7 +126,7 @@
 </template>
 <script>
 
-import Axios from "axios";
+import axios from "axios";
 import { validationMixin } from "vuelidate";
 import {
   required,
@@ -191,7 +191,7 @@ export default {
 
   methods: {
     getRole() {
-      Axios.get("/api/user/create").then(
+      axios.get("/api/user/create").then(
         (response) => {
           this.roles = response.data.roles;
         },
@@ -220,7 +220,7 @@ export default {
 
         const data = this.editedItem;
 
-        Axios.post("/api/user/store", data).then(
+        axios.post("/api/user/store", data).then(
           (response) => {
             if (response.data.success) {
               // send data to Sockot.IO Server
@@ -302,7 +302,7 @@ export default {
     },
   },
   mounted() {
-    Axios.defaults.headers.common["Authorization"] = "Bearer " + localStorage.getItem("access_token");
+    axios.defaults.headers.common["Authorization"] = "Bearer " + localStorage.getItem("access_token");
     this.getRole();
   },
 };

@@ -112,7 +112,7 @@
 </template>
 <script>
 
-import Axios from "axios";
+import axios from "axios";
 import { validationMixin } from "vuelidate";
 import { required, maxLength, email } from "vuelidate/lib/validators";
 import { mapState } from 'vuex';
@@ -162,7 +162,7 @@ export default {
   methods: {
     getPermission() {
       this.loading = true;
-      Axios.get("/api/permission/index").then(
+      axios.get("/api/permission/index").then(
         (response) => {
           this.permissions = response.data.permissions;
           this.loading = false;
@@ -182,7 +182,7 @@ export default {
     deletePermission(permissionid) {
       const data = { permissionid: permissionid };
       this.loading = true;
-      Axios.post("/api/permission/delete", data).then(
+      axios.post("/api/permission/delete", data).then(
         (response) => {
           if (response.data.success) {
             // send data to Sockot.IO Server
@@ -260,7 +260,7 @@ export default {
           const data = this.editedPermission;
           const permissionid = this.editedPermission.id;
 
-          Axios.post("/api/permission/update/" + permissionid, data).then(
+          axios.post("/api/permission/update/" + permissionid, data).then(
             (response) => {
               if (response.data.success) {
                 // send data to Sockot.IO Server
@@ -285,7 +285,7 @@ export default {
         } else {
           const data = this.editedPermission;
 
-          Axios.post("/api/permission/store", data).then(
+          axios.post("/api/permission/store", data).then(
             (response) => {
               if (response.data.success) {
                 // send data to Sockot.IO Server
@@ -347,7 +347,7 @@ export default {
     ...mapState("userRolesPermissions", ["userRoles", "userPermissions"]),
   },
   mounted() {
-    Axios.defaults.headers.common["Authorization"] =
+    axios.defaults.headers.common["Authorization"] =
       "Bearer " + localStorage.getItem("access_token");
     this.getPermission();
     this.websocket();

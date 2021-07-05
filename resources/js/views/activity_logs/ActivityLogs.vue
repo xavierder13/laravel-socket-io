@@ -46,7 +46,7 @@
 </template>
 <script>
 
-import Axios from "axios";
+import axios from "axios";
 import { mapState } from 'vuex';
 
 export default {
@@ -88,7 +88,7 @@ export default {
   methods: {
     getActivityLogs() {
       this.loading = true;
-      Axios.get("/api/activity_logs/index").then(
+      axios.get("/api/activity_logs/index").then(
         (response) => {
           this.activity_logs = response.data.activity_logs;
           this.loading = false;
@@ -119,7 +119,7 @@ export default {
     ...mapState("userRolesPermissions", ["userRoles", "userPermissions"]),
   },
   mounted() {
-    Axios.defaults.headers.common["Authorization"] = "Bearer " + localStorage.getItem("access_token");
+    axios.defaults.headers.common["Authorization"] = "Bearer " + localStorage.getItem("access_token");
     this.getActivityLogs();
     this.userRolesPermissions();
     this.websocket();

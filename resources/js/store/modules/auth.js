@@ -1,4 +1,4 @@
-import Axios from 'axios';
+import axios from 'axios';
 import router from '../../router';
 
 const state = {
@@ -9,7 +9,7 @@ const getters = {};
 
 const actions = {
   getUser({ commit }) {
-    Axios.get("/api/auth/init").then(
+    axios.get("/api/auth/init").then(
       (response) => {
         commit('setUser', response.data.user);
       },
