@@ -8,7 +8,7 @@ const state = {
 const getters = {};
 
 const actions = {
-  getUser({ commit, dispatch }) {
+  getUser({ commit }) {
     Axios.get("/api/auth/init").then(
       (response) => {
         commit('setUser', response.data.user);
@@ -22,26 +22,7 @@ const actions = {
       }
     );
   },
-  login({}, data) {
-    Axios.post("/api/auth/login", data).then(
-      (response) => {
-        if (response.data.access_token) {
-          localStorage.setItem("access_token", response.data.access_token);
-          router.push("/").catch((e) => {});
-          // this.clear();
-          this.email = null;
-          this.password = null;
-          this.overlay = false;
-        } else {
-          this.isInvalid = true;
-          this.overlay = false;
-        }
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-  }
+  
 };
 
 const mutations = {

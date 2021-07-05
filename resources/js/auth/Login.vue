@@ -32,7 +32,7 @@
                     :error-messages="emailErrors"
                     @change="$v.email.$touch()"
                     @blur="$v.email.$touch()"
-                    @keyup="clear()"
+                    @keyup="isInvalid = false"
                   ></v-text-field>
 
                   <v-text-field
@@ -46,7 +46,7 @@
                     :error-messages="passwordErrors"
                     @change="$v.password.$touch()"
                     @blur="$v.password.$touch()"
-                    @keyup="clear()"
+                    @keyup="isInvalid = false"
                   ></v-text-field>
                 </v-form>
               </v-card-text>
@@ -102,7 +102,6 @@ export default {
       !this.$v.password.required && errors.push("Password is required.");
       return errors;
     },
-
   },
   methods: {
     login() {
@@ -113,31 +112,31 @@ export default {
         const email = this.email;
         const password = this.password;
         const data = { email: email, password: password };
-        this.$store.dispatch('auth/login', data);
-        // Axios.post("/api/auth/login", data).then(
-        //   (response) => {
-        //     if (response.data.access_token) {
-        //       localStorage.setItem("access_token", response.data.access_token);
-        //       this.$router.push("/").catch((e) => {});
-        //       this.clear();
-        //       this.email = null;
-        //       this.password = null;
-        //       this.overlay = false;
-        //     } else {
-        //       this.isInvalid = true;
-        //       this.overlay = false;
-        //     }
-        //   },
-        //   (error) => {
-        //     console.log(error);
-        //   }
-        // );
+
+        Axios.post("/api/auth/login", data).then(
+          (response) => {
+            if (response.data.access_token) {
+              localStorage.setItem("access_token", response.data.access_token);
+              this.$router.push("/").catch((e) => {});
+              this.clear();
+            } else {
+              this.isInvalid = true;
+              this.overlay = false;
+            }
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
       }
     },
 
     clear() {
       this.$v.$reset();
       this.isInvalid = false;
+      this.email = null;
+      this.password = null;
+      this.overlay = false;
     },
   },
 

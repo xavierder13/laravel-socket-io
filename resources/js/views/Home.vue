@@ -148,8 +148,31 @@ export default {
         }
       };
     },
+    logout() {
+      this.overlay = true;
+      Axios.get("/api/auth/logout").then(
+        (response) => {
+          if (response.data.success) {
+            this.overlay = false;
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("user");
+            this.$router.push("/login").catch(() => {});
+          }
+        },
+        (error) => {
+          this.overlay = false;
+          console.log(error);
 
-    ...mapActions("auth", ["getUser", "logout"]),
+          // if unauthenticated (401)
+          if (error.response.status == "401") {
+            localStorage.removeItem("access_token");
+            this.$router.push({ name: "login" });
+          }
+        }
+      );
+    },
+
+    ...mapActions("auth", ["getUser"]),
     ...mapActions("userRolesPermissions", ["userRolesPermissions"]),
 
   },

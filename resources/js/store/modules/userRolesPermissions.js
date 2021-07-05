@@ -25,7 +25,7 @@ const state = {
 const getters = {};
 
 const actions = {
-  async userRolesPermissions({ commit, dispatch }) {
+  async userRolesPermissions({ commit }) {
     let response = await Axios.get("/api/user/roles_permissions").then((response) => {
 
       commit('setUserRoles', response.data.user_roles);
