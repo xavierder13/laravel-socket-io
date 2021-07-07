@@ -1,4 +1,4 @@
-import Axios from 'axios';
+import axios from 'axios';
 import router from '../../router';
 
 const state = {
@@ -26,7 +26,7 @@ const getters = {};
 
 const actions = {
   async userRolesPermissions({ commit }) {
-    let response = await Axios.get("/api/user/roles_permissions").then((response) => {
+    let response = await axios.get("/api/user/roles_permissions").then((response) => {
 
       commit('setUserRoles', response.data.user_roles);
       commit('setUserPermissions', response.data.user_permissions);

@@ -27,7 +27,7 @@
               label="Search"
               single-line
               hide-details
-              v-if="permissions.user_list"
+              v-if="userPermissions.user_list"
             ></v-text-field>
           </v-card-title>
           <v-data-table
@@ -36,7 +36,7 @@
             :search="search"
             :loading="loading"
             loading-text="Loading... Please wait"
-            v-if="permissions.activity_logs"
+            v-if="userPermissions.activity_logs"
           >
           </v-data-table>
         </v-card>
@@ -77,11 +77,8 @@ export default {
         { text: "User Email", value: "email" },
       ],
       activity_logs: [],
-      roles_permissions: [],
-      permissions: Home.data().permissions,
       loading: true,
-      user_permissions: [],
-      user_roles: [],
+
     };
   },
 
@@ -121,7 +118,6 @@ export default {
   mounted() {
     axios.defaults.headers.common["Authorization"] = "Bearer " + localStorage.getItem("access_token");
     this.getActivityLogs();
-    this.userRolesPermissions();
     this.websocket();
   },
 };
