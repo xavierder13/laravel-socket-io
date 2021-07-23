@@ -40,17 +40,18 @@ class UserController extends Controller
             'name.required' => 'Please enter name',
             'email.required' => 'Email is required',
             'email.email' => 'Please enter a valid email',
-            'username.required' => 'Please enter username',
-            'username.unique' => 'Username already exists',
+            'email.unique' => 'Email already exists',
+            'password.required' => 'Password is required',
             'password.min' => 'Password must be atleast 8 characters',
             'password.same' => 'Password and Confirm Password did not match',
+            'confirm_password.required' => 'Confirm Password is required',
         ];
 
         $valid_fields = [
             'name' => 'required|string|max:255',
-            // 'email' => 'string|email|max:255',
             'email' => 'required|string|email|unique:users,email',
             'password' => 'required|string|min:8|same:confirm_password',
+            'confirm_password' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $valid_fields, $rules);
@@ -101,15 +102,20 @@ class UserController extends Controller
 
         $rules = [
             'name.required' => 'Please enter name',
+            'password.required' => 'Password is required',
+            'password.min' => 'Password must be atleast 8 characters',
+            'password.same' => 'Password and Confirm Password did not match',
+            'confirm_password.required' => 'Confirm Password is required',
         ];
 
         $valid_fields = [
             'name' => 'required|string|max:255',
         ];
 
-        if(!empty($request->get('password')))
+        if($request->get('password') || $request->get('confirm_password'))
         {
-            $valid_fields['password'] = 'string|min:8|same:confirm_password';
+            $valid_fields['password'] = 'required|string|min:8|same:confirm_password';
+            $valid_fields['confirm_password'] = 'required';
         }
 
 

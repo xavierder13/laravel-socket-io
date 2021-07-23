@@ -34,7 +34,6 @@ export default {
       absolute: true,
       overlay: false,
       search: "",
-      permissions: Home.data().permissions,
       loading: true,
     };
   },

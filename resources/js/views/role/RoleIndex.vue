@@ -48,8 +48,8 @@
                               v-model="editedRole.name"
                               label="Role"
                               required
-                              :error-messages="roleErrors"
-                              @input="$v.editedRole.name.$touch()"
+                              :error-messages="roleErrors + roleError.name"
+                              @input="$v.editedRole.name.$touch() + (roleError.name = [])"
                               @blur="$v.editedRole.name.$touch()"
                               :readonly="role.id == 1 ? true : false"
                             ></v-text-field>
@@ -142,9 +142,7 @@
                 class="mr-1"
                 color="green"
                 @click="editRole(item)"
-                v-if="
-                  userPermissions.role_edit && item.name != 'Administrator'
-                "
+                v-if="userPermissions.role_edit && item.name != 'Administrator'"
               >
                 mdi-pencil
               </v-icon>
@@ -170,9 +168,8 @@
 import axios from "axios";
 import { validationMixin } from "vuelidate";
 import { required, maxLength, email } from "vuelidate/lib/validators";
-import { mapState } from 'vuex';  
+import { mapState } from "vuex";
 export default {
-
   mixins: [validationMixin],
 
   validations: {
@@ -204,7 +201,7 @@ export default {
         {
           text: "Home",
           disabled: false,
-          link: "/dashboard",
+          link: "/",
         },
         {
           text: "Roles Record",
@@ -213,6 +210,9 @@ export default {
       ],
       loading: true,
       dialogPermission: false,
+      roleError: {
+        name: []
+      }
     };
   },
 
@@ -315,6 +315,9 @@ export default {
 
     save() {
       this.$v.$touch();
+      this.roleError = {
+        name: []
+      };
 
       if (!this.$v.$error) {
         this.disabled = true;
@@ -338,6 +341,15 @@ export default {
                 this.showAlert();
                 this.close();
               }
+              else
+              {
+                let errors = response.data;
+                let errorNames = Object.keys(response.data);
+
+                errorNames.forEach(value => {
+                  this.roleError[value].push(errors[value]);
+                });
+              }
 
               this.disabled = false;
             },
@@ -358,6 +370,15 @@ export default {
                 //push recently added data from database
                 this.roles.push(response.data.role);
               }
+              else
+              {
+                let errors = response.data;
+                let errorNames = Object.keys(response.data);
+
+                errorNames.forEach(value => {
+                  this.roleError[value].push(errors[value]);
+                });
+              }
               this.disabled = false;
             },
             (error) => {
@@ -373,6 +394,9 @@ export default {
       this.editedRole.name = "";
       this.permission = [];
       this.role = [];
+      this.roleError = {
+        name: []
+      }
     },
 
     viewPermission(item) {
@@ -396,7 +420,7 @@ export default {
       // Socket.IO fetch data
       this.$options.sockets.sendData = (data) => {
         let action = data.action;
-       if (
+        if (
           action == "role-create" ||
           action == "role-edit" ||
           action == "role-delete"
@@ -410,7 +434,7 @@ export default {
     formTitle() {
       return this.editedIndex === -1
         ? "New Role"
-        : this.editedRole.name == "Administrator"
+        : this.editedRole.id === 1
         ? "Role"
         : "Edit Role";
     },
@@ -423,9 +447,10 @@ export default {
     ...mapState("userRolesPermissions", ["userRoles", "userPermissions"]),
   },
   mounted() {
-    axios.defaults.headers.common["Authorization"] = "Bearer " + localStorage.getItem("access_token");
+    axios.defaults.headers.common["Authorization"] =
+      "Bearer " + localStorage.getItem("access_token");
     this.getRole();
-    this.websocket();
+    // this.websocket();
   },
 };
 </script>

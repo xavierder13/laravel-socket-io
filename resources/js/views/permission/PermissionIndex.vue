@@ -48,8 +48,8 @@
                               v-model="editedPermission.name"
                               label="Permission"
                               required
-                              :error-messages="permissionErrors"
-                              @input="$v.editedPermission.name.$touch()"
+                              :error-messages="permissionErrors + permissionError.name"
+                              @input="$v.editedPermission.name.$touch() + (permissionError.name = [])"
                               @blur="$v.editedPermission.name.$touch()"
                             ></v-text-field>
                           </v-col>
@@ -146,7 +146,7 @@ export default {
         {
           text: "Home",
           disabled: false,
-          link: "/dashboard",
+          link: "/",
         },
         {
           text: "Permission Lists",
@@ -154,7 +154,9 @@ export default {
         },
       ],
       loading: true,
-
+      permissionError: {
+        name: [],
+      }
     };
   },
 
@@ -250,7 +252,11 @@ export default {
     },
 
     save() {
+
       this.$v.$touch();
+      this.permissionError = {
+        name: []
+      };
 
       if (!this.$v.$error) {
         this.disabled = true;
@@ -263,7 +269,7 @@ export default {
             (response) => {
               if (response.data.success) {
                 // send data to Sockot.IO Server
-                this.$socket.emit("sendData", { action: "permission-edit" });
+                // this.$socket.emit("sendData", { action: "permission-edit" });
 
                 Object.assign(
                   this.permissions[this.editedIndex],
@@ -272,6 +278,15 @@ export default {
                 this.showAlert();
                 this.close();
 
+              }
+              else
+              {
+                let errors = response.data;
+                let errorNames = Object.keys(response.data);
+
+                errorNames.forEach(value => {
+                  this.permissionError[value].push(errors[value]);
+                });
               }
 
               this.disabled = false;
@@ -286,15 +301,26 @@ export default {
 
           axios.post("/api/permission/store", data).then(
             (response) => {
+              
               if (response.data.success) {
                 // send data to Sockot.IO Server
-                this.$socket.emit("sendData", { action: "permission-create" });
+                // this.$socket.emit("sendData", { action: "permission-create" });
 
                 this.showAlert();
                 this.close();
 
                 //push recently added data from database
                 this.permissions.push(response.data.permission);
+              }
+              else
+              { 
+                let errors = response.data;
+                let errorNames = Object.keys(response.data);
+
+                errorNames.forEach(value => {
+                  this.permissionError[value].push(errors[value]);
+                });
+                
               }
               this.disabled = false;
             },
@@ -310,6 +336,9 @@ export default {
     clear() {
       this.$v.$reset();
       this.editedPermission.name = "";
+      this.permissionError = {
+        name: []
+      };
     },
     isUnauthorized(error) {
       // if unauthenticated (401)
@@ -349,7 +378,7 @@ export default {
     axios.defaults.headers.common["Authorization"] =
       "Bearer " + localStorage.getItem("access_token");
     this.getPermission();
-    this.websocket();
+    // this.websocket();
   },
 };
 </script>
