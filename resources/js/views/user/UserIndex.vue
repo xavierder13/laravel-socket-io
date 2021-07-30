@@ -631,8 +631,10 @@ export default {
   },
   computed: {
     formTitle() {
-      return (this.editedItem == this.editedIndex) === -1
+      return this.editedIndex === -1
         ? "New User"
+        : this.editedItem.id === 1
+        ? "User"
         : "Edit User";
     },
     nameErrors() {
