@@ -378,7 +378,7 @@ export default {
         { text: "Active", value: "active" },
         { text: "Last Login", value: "last_login" },
         { text: "Roles", value: "roles" },
-        { text: "Actions", value: "actions", sortable: false },
+        { text: "Actions", value: "actions", sortable: false, width: "80px" },
       ],
       roles_permissions_headers: [
         { text: "Role", value: "role" },
