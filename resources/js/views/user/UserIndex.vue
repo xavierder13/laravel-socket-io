@@ -179,14 +179,56 @@
                     <v-card-title class="mb-0 pb-0">
                       <span class="headline">Roles</span>
                       <v-spacer></v-spacer>
-                      <v-icon @click="dialogPermission = false"
-                        >mdi-close</v-icon
-                      >
+                      <v-text-field
+                        v-model="search_roles_permissions"
+                        append-icon="mdi-magnify"
+                        label="Search"
+                        single-line
+                      ></v-text-field>
+                      <v-spacer></v-spacer>
+                      <v-icon @click="closeRolesBreakdown()">mdi-close</v-icon>
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-card-text>
                       <v-container>
-                        <v-row>
+                        <v-data-table
+                          :headers="roles_permissions_headers"
+                          :items="rolesBreakdown"
+                          :search="search_roles_permissions"
+                          :loading="loading"
+                          item-key="index"
+                          group-by="role"
+                          class="elevation-1"
+                          :expanded.sync="expanded"
+                          loading-text="Loading... Please wait"
+                          fixed-header
+                        >
+                          <template
+                            v-slot:group.header="{
+                              items,
+                              headers,
+                              toggle,
+                              isOpen,
+                            }"
+                          >
+                            <td :colspan="headers.length">
+                              <v-btn
+                                @click="toggle"
+                                small
+                                icon
+                                :ref="items"
+                                :data-open="isOpen"
+                              >
+                                <v-icon v-if="isOpen">mdi-chevron-up</v-icon>
+                                <v-icon v-else>mdi-chevron-down</v-icon>
+                              </v-btn>
+                              <v-chip color="secondary">
+                                <strong>{{ items[0].role }}</strong>
+                              </v-chip>
+                            </td>
+                          </template>
+                        </v-data-table>
+                        <!-- <v-row>
                           <v-col class="mt-0 mb-0 pt-0 pb-0">
                             <v-expansion-panels>
                               <v-expansion-panel
@@ -209,7 +251,7 @@
                               </v-expansion-panel>
                             </v-expansion-panels>
                           </v-col>
-                        </v-row>
+                        </v-row> -->
                       </v-container>
                     </v-card-text>
                     <v-card-actions>
@@ -234,7 +276,7 @@
                   small
                   color="secondary"
                   v-if="key == 0"
-                  @click="viewRoles(item.roles)"
+                  @click="viewRolesBreakdown(item.roles)"
                 >
                   {{ role.name }}
                 </v-chip>
@@ -242,7 +284,7 @@
                 <v-chip
                   small
                   v-if="key == 0 && item.roles.length > 1"
-                  @click="viewRoles(item.roles)"
+                  @click="viewRolesBreakdown(item.roles)"
                 >
                   {{ "+" }}
                   {{
@@ -329,6 +371,7 @@ export default {
         },
       ],
       search: "",
+      search_roles_permissions: "",
       headers: [
         { text: "Full Name", value: "name" },
         { text: "E-mail", value: "email" },
@@ -337,6 +380,11 @@ export default {
         { text: "Roles", value: "roles" },
         { text: "Actions", value: "actions", sortable: false },
       ],
+      roles_permissions_headers: [
+        { text: "Role", value: "role" },
+        { text: "Permission", value: "permission" },
+      ],
+      expanded: [],
       switch1: true,
       disabled: false,
       emailReadonly: false,
@@ -601,9 +649,14 @@ export default {
         this.passwordHasChanged = false;
       }
     },
-    viewRoles(roles) {
+    viewRolesBreakdown(roles) {
       this.dialogPermission = true;
       this.roles_permissions = roles;
+    },
+
+    closeRolesBreakdown() {
+      this.dialogPermission = false;
+      this.search_roles_permissions = "";
     },
 
     isUnauthorized(error) {
@@ -685,6 +738,22 @@ export default {
           this.confirm_password = "password";
         }
       }
+    },
+    rolesBreakdown() {
+      let roles_permissions = [];
+      let index = 0;
+      this.roles_permissions.forEach((value) => {
+        value.permissions.forEach((val) => {
+          roles_permissions.push({
+            index: index,
+            role: value.name,
+            permission: val.name,
+          });
+          index++;
+        });
+      });
+
+      return roles_permissions;
     },
     ...mapState("userRolesPermissions", ["userRoles", "userPermissions"]),
   },
