@@ -14,7 +14,14 @@
     </v-app-bar>
 
     <!-- Sidebar -->
-    <v-navigation-drawer v-model="drawer" dark app>
+    <v-navigation-drawer
+      v-model="drawer"
+      :mini-variant="mini"
+      :permanent="$vuetify.breakpoint.mdOnly"
+      :temporary="$vuetify.breakpoint.smAndDown"
+      dark
+      app
+    >
       <v-list>
         <v-list-item class="px-2">
           <v-list-item-avatar class="rounded-5" height="60" width="60">
@@ -54,7 +61,11 @@
               <v-list-item-title>User Record</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item link to="/user/create" v-if="userPermissions.user_create">
+          <v-list-item
+            link
+            to="/user/create"
+            v-if="userPermissions.user_create"
+          >
             <v-list-item-content>
               <v-list-item-title>Create New</v-list-item-title>
             </v-list-item-content>
@@ -93,7 +104,11 @@
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
-        <v-list-item link to="/activity_logs" v-if="userPermissions.activity_logs">
+        <v-list-item
+          link
+          to="/activity_logs"
+          v-if="userPermissions.activity_logs"
+        >
           <v-list-item-icon>
             <v-icon>mdi-history</v-icon>
           </v-list-item-icon>
@@ -122,11 +137,12 @@
 </template>
 
 <style>
-  html { overflow-y: auto } /* show scrollbar when overflow */
+html {
+  overflow-y: auto;
+} /* show scrollbar when overflow */
 </style>
 
 <script>
-
 import axios from "axios";
 import { mapState, mapActions } from "vuex";
 
@@ -136,7 +152,6 @@ export default {
       absolute: true,
       overlay: false,
       drawer: true,
-      mini: false,
       right: null,
       selectedItem: 1,
       loading: null,
@@ -185,10 +200,18 @@ export default {
 
     ...mapActions("auth", ["getUser"]),
     ...mapActions("userRolesPermissions", ["userRolesPermissions"]),
-
   },
 
   computed: {
+    mdAndUp() {
+      return this.$vuetify.breakpoint.mdAndUp;
+    },
+    mini() {
+      return !(this.mdAndUp || this.menuOpen);
+    },
+    breakpoint() {
+      return JSON.stringify(this.$vuetify.breakpoint, null, 2);
+    },
     ...mapState("auth", ["user"]),
     ...mapState("userRolesPermissions", ["userRoles", "userPermissions"]),
   },
