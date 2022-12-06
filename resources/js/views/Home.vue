@@ -7,10 +7,56 @@
       </v-btn>
       <v-spacer></v-spacer>
 
-      <v-btn @click="logout">
-        <v-icon>mdi-logout</v-icon>
-        Logout
-      </v-btn>
+      <v-menu offset-y :nudge-width="200">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn small rounded v-bind="attrs" v-on="on" color="grey darken-3">
+            <v-icon> mdi-menu-down </v-icon>
+          </v-btn>
+        </template>
+        <v-card color="grey lighten-3">
+          <v-card-text class="text-center">
+            <v-row>
+              <v-col
+                ><img
+                  src="/img/default-profile.png"
+                  width="120px"
+                  height="100px"
+                  alt="User"
+                  style="border-radius: 50%"
+              /></v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <h5 class="text--secondary">
+                  {{ user.name }}
+                </h5>
+                <h6 class="text--disabled">
+                  {{
+                    user.id === 1
+                      ? "Administrator"
+                      : user.position
+                      ? user.position.name
+                      : ""
+                  }}
+                </h6>
+              </v-col>
+            </v-row>
+          </v-card-text>
+          <v-divider class="pa-0 mb-0"></v-divider>
+          <v-card-actions class="grey darken-2 d-flex justify-content-around">
+            <div>
+              <v-btn class="white--text" plain small @click="userProfile()">
+                <v-icon small class="mr-1">mdi-account</v-icon> Profile
+              </v-btn>
+            </div>
+            <div>
+              <v-btn class="white--text" plain small @click="logout">
+                <v-icon small class="mr-1">mdi-logout</v-icon> Logout
+              </v-btn>
+            </div>
+          </v-card-actions>
+        </v-card>
+      </v-menu>
     </v-app-bar>
 
     <!-- Sidebar -->
@@ -101,6 +147,7 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
+    {{ 'asdadsaasd' }}
     <v-overlay :absolute="absolute" :value="overlay">
       <v-progress-circular
         :size="70"
@@ -145,6 +192,9 @@ export default {
   },
 
   methods: {
+    userProfile() {
+      this.$router.push({ name: "user.profile" }).catch((e) => {});
+    },
     websocket() {
       // Socket.IO fetch data
       this.$options.sockets.sendData = (data) => {
@@ -199,6 +249,7 @@ export default {
     this.userRolesPermissions();
     this.getUser();
     this.websocket();
+
   },
 };
 </script>

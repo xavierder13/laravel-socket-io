@@ -5,6 +5,7 @@ import Login from './auth/Login.vue';
 import Dashboard from './views/dashboard/Dashboard.vue';
 import UserIndex from './views/user/UserIndex.vue';
 import UserCreate from './views/user/UserCreate.vue';
+import UserProfile from './views/user/UserProfile.vue';
 import Permission from './views/permission/PermissionIndex.vue';
 import Role from './views/role/RoleIndex.vue';
 import ActivityLogs from './views/activity_logs/ActivityLogs.vue';
@@ -33,6 +34,11 @@ const routes = [
         path: '/user/create',
         name: 'user.create',
         component: UserCreate
+      },
+      {
+        path: '/user/profile',
+        name: 'user.profile',
+        component: UserProfile
       },
       {
         path: '/permission/index',
