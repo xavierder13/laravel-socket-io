@@ -24,7 +24,7 @@
                   label="Role"
                   @input="$v.editedItem.name.$touch() + (roleError.name = [])"
                   @blur="$v.editedItem.name.$touch()"
-                  :readonly="roleid == 1 ? true : false"  
+                  :readonly="roleid == 1 ? true : false"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -88,17 +88,16 @@
             </v-row>
           </v-card-text>
           <v-divider class="mb-3 mt-4"></v-divider>
-          <v-card-actions class="pa-0">
+          <v-card-actions class="pa-0" v-if="roleid != 1">
             <v-btn
               color="primary"
               @click="save"
               :disabled="disabled"
               class="ml-6 mb-4 mr-1"
-               v-if="roleid != 1 && hasChanges"
             >
-              Update
+              Save
             </v-btn>
-            <v-btn color="#E0E0E0" to="/role/index" :class=" !hasChanges ? 'ml-6 mb-4' : 'mb-4'"> Back </v-btn>
+            <v-btn color="#E0E0E0" to="/role/index" class="mb-4"> Cancel </v-btn>
           </v-card-actions>
         </v-card>
       </v-main>
@@ -130,13 +129,9 @@ export default {
       disabled: false,
       switchFilter: false,
       rolePermissions: [],
-      currRolePermissions: [],
       selectAll: false,
       permissions: [],
       editedIndex: -1,
-      currItem: {
-        name: "",
-      },
       editedItem: {
         name: "",
       },
@@ -164,7 +159,6 @@ export default {
         name: [],
       },
       roleid: "",
-      hasChanges: false,
     };
   },
 
@@ -180,7 +174,6 @@ export default {
         (response) => {
           // console.log(response.data);
           this.editedItem = response.data.role;
-          this.currItem = { name: response.data.role.name };
           this.permissions = response.data.permissions;
           let rolePermissions = response.data.rolePermissions;
 
@@ -189,7 +182,6 @@ export default {
               if(value.id === val)
               {
                 this.rolePermissions.push(value);
-                this.currRolePermissions.push(value);
                 // console.log(this.rolePermissions);
               }
             });
@@ -234,22 +226,6 @@ export default {
               // this.$socket.emit("sendData", { action: "role-edit" });
 
               this.showAlert();
-              this.hasChanges = false;
-              this.currItem = { name: response.data.role.name };
-              this.currRolePermissions = [];
-              this.rolePermissions = [];
-              let rolePermissions = response.data.role.permissions;
-
-              this.permissions.forEach(value => {
-                rolePermissions.forEach(val => {
-                  if(value.id === val.id)
-                  {
-                    this.rolePermissions.push(value);
-                    this.currRolePermissions.push(value);
-                    // console.log(this.rolePermissions);
-                  }
-                });
-              });
 
             }
             else
@@ -342,45 +318,6 @@ export default {
       if(this.selectAll)
       {
         this.rolePermissions = this.permissions;
-      }
-    },
-    rolePermissions()
-    { 
-      this.hasChanges = false;
-      let editedItem = {
-        name: this.editedItem.name,
-        permissions: this.rolePermissions,
-      };
-
-      let currItem = {
-        name: this.currItem.name,
-        permissions: this.currRolePermissions,
-      };
-      
-      // check if Permissions has changes 
-      if(JSON.stringify(currItem) !== JSON.stringify(editedItem)){
-        this.hasChanges = true;
-      }
-
-    },
-    "editedItem.name"(){
-      
-      this.hasChanges = false;
-      let editedItem = {
-        name: this.editedItem.name,
-        permissions: this.rolePermissions,
-      };
-      let currItem = {
-        name: this.currItem.name,
-        permissions: this.currRolePermissions,
-      };
-
-      console.log('editedItem', editedItem);
-      console.log('currItem', currItem);
-      
-      // check if Permissions has changes 
-      if(JSON.stringify(currItem) !== JSON.stringify(editedItem)){
-        this.hasChanges = true;
       }
     }
   },
