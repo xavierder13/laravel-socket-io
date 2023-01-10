@@ -7,7 +7,9 @@ import UserIndex from './views/user/UserIndex.vue';
 import UserCreate from './views/user/UserCreate.vue';
 import UserProfile from './views/user/UserProfile.vue';
 import Permission from './views/permission/PermissionIndex.vue';
-import Role from './views/role/RoleIndex.vue';
+import RoleIndex from './views/role/RoleIndex.vue';
+import RoleCreate from './views/role/RoleCreate.vue';
+import RoleView from './views/role/RoleView.vue';
 import ActivityLogs from './views/activity_logs/ActivityLogs.vue';
 import PageNotFound from './404/PageNotFound.vue';
 import Unauthorize from './401/Unauthorize.vue';
@@ -48,7 +50,17 @@ const routes = [
       {
         path: '/role/index',
         name: 'role.index',
-        component: Role
+        component: RoleIndex
+      },
+      {
+        path: '/role/create',
+        name: 'role.create',
+        component: RoleCreate
+      },
+      {
+        path: '/role/view/:roleid',
+        name: 'role.view',
+        component: RoleView
       },
       {
         path: '/activity_logs',

@@ -147,7 +147,6 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    {{ 'asdadsaasd' }}
     <v-overlay :absolute="absolute" :value="overlay">
       <v-progress-circular
         :size="70"
@@ -169,7 +168,7 @@
 </template>
 
 <style>
-  html { overflow-y: auto } /* show scrollbar when overflow */
+  html { overflow-y: auto !important } /* show scrollbar when overflow */
 </style>
 
 <script>

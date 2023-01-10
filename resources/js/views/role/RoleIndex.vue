@@ -28,17 +28,17 @@
                   fab
                   dark
                   class="mb-2"
-                  @click="clear() + (dialog = true)"
+                  @click="addRole()"
                   v-if="userPermissions.role_create"
                 >
                   <v-icon>mdi-plus</v-icon>
                 </v-btn>
                 <v-dialog v-model="dialog" max-width="1000px" persistent>
                   <v-card>
-                    <v-card-title class="mb-0 pb-0">
+                    <v-card-title class="pa-4">
                       <span class="headline">{{ formTitle }}</span>
                     </v-card-title>
-                    <v-divider></v-divider>
+                    <v-divider class="mt-0"></v-divider>
                     <v-card-text>
                       <v-container>
                         <v-row>
@@ -98,16 +98,16 @@
                         </v-row>
                       </v-container>
                     </v-card-text>
-
-                    <v-card-actions>
+                    <v-divider class="mb-3 mt-0"></v-divider>
+                    <v-card-actions class="pa-0">
                       <v-spacer></v-spacer>
-                      <v-btn color="#E0E0E0" @click="close" class="mb-4">
+                      <v-btn color="#E0E0E0" @click="close" class="mb-3">
                         Cancel
                       </v-btn>
                       <v-btn
                         color="primary"
                         @click="save"
-                        class="mb-4 mr-4"
+                        class="mb-3 mr-4"
                         :disabled="disabled"
                         v-if="role.id != 1"
                       >
@@ -231,19 +231,31 @@ export default {
       );
     },
 
-    editRole(item) {
-      const data = { roleid: item.id };
-      let rolePermissions = item.permissions;
-      this.role = item;
-      this.permission = [];
+    addRole() {
+      this.$router.push({
+        name: "role.create"
+      });
+    },
 
-      rolePermissions.forEach((value, index) => {
-        this.permission.push(value.id);
+    editRole(item) {
+      this.$router.push({
+        name: "role.view",
+        params: { roleid: item.id },
       });
 
-      this.editedIndex = this.roles.indexOf(item);
-      this.editedRole = Object.assign({}, item);
-      this.dialog = true;
+      // const data = { roleid: item.id };
+      
+      // let rolePermissions = item.permissions;
+      // this.role = item;
+      // this.permission = [];
+
+      // rolePermissions.forEach((value, index) => {
+      //   this.permission.push(value.id);
+      // });
+
+      // this.editedIndex = this.roles.indexOf(item);
+      // this.editedRole = Object.assign({}, item);
+      // this.dialog = true;
     },
 
     deleteRole(roleid) {
@@ -335,7 +347,7 @@ export default {
             (response) => {
               if (response.data.success) {
                 // send data to Sockot.IO Server
-                this.$socket.emit("sendData", { action: "role-edit" });
+                // this.$socket.emit("sendData", { action: "role-edit" });
 
                 Object.assign(this.roles[this.editedIndex], response.data.role);
                 this.showAlert();
@@ -363,7 +375,7 @@ export default {
             (response) => {
               if (response.data.success) {
                 // send data to Sockot.IO Server
-                this.$socket.emit("sendData", { action: "role-create" });
+                // this.$socket.emit("sendData", { action: "role-create" });
                 this.showAlert();
                 this.close();
 
@@ -450,7 +462,7 @@ export default {
     axios.defaults.headers.common["Authorization"] =
       "Bearer " + localStorage.getItem("access_token");
     this.getRole();
-    this.websocket();
+    // this.websocket();
   },
 };
 </script>

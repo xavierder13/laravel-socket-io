@@ -151,3 +151,5 @@ Route::group(['prefix' => 'activity_logs', 'middleware' => ['auth:api', 'activit
     ]);
     
 });
+
+Route::get('sap', 'API\UserController@sap');
