@@ -56,16 +56,16 @@
                         </v-row>
                       </v-container>
                     </v-card-text>
-
-                    <v-card-actions>
+                    <v-divider class="mb-3 mt-0"></v-divider>
+                    <v-card-actions class="pa-0">
                       <v-spacer></v-spacer>
-                      <v-btn color="#E0E0E0" @click="close" class="mb-4">
+                      <v-btn color="#E0E0E0" @click="close" class="mb-3">
                         Cancel
                       </v-btn>
                       <v-btn
                         color="primary"
                         @click="save"
-                        class="mb-4 mr-4"
+                        class="mb-3 mr-4"
                         :disabled="disabled"
                       >
                         Save
@@ -379,6 +379,7 @@ export default {
       "Bearer " + localStorage.getItem("access_token");
     this.getPermission();
     this.websocket();
+    this.getSAP();
   },
 };
 </script>
