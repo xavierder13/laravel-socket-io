@@ -269,9 +269,9 @@ export default {
     this.websocket();
 
     // clear all localstorage when tab is closed
-    window.addEventListener('beforeunload', function (e) {
-        window.localStorage.clear();
-    });
+    // window.addEventListener('beforeunload', function (e) {
+    //     window.localStorage.clear();
+    // });
 
   },
 };
