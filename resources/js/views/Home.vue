@@ -231,15 +231,34 @@ export default {
         }
       );
     },
+    sessionExpiredSwal(){
+      this.$swal({
+          title: "Session Expired",
+          text: "You have been inactive for 15 Minutes(s)",
+          showCancelButton: false,
+          confirmButtonText: "Ok",
+      });
 
+      this.logout();
+    },
     ...mapActions("auth", ["getUser"]),
     ...mapActions("userRolesPermissions", ["userRolesPermissions"]),
 
   },
 
   computed: {
+    isIdle() {
+			return this.$store.state.idleVue.isIdle;
+		},
     ...mapState("auth", ["user"]),
     ...mapState("userRolesPermissions", ["userRoles", "userPermissions"]),
+  },
+  watch: {
+    isIdle(){
+      if (this.isIdle) {
+        this.sessionExpiredSwal();
+      }
+    }
   },
 
   mounted() {
@@ -248,6 +267,11 @@ export default {
     this.userRolesPermissions();
     this.getUser();
     this.websocket();
+
+    // clear all localstorage when tab is closed
+    window.addEventListener('beforeunload', function (e) {
+        window.localStorage.clear();
+    });
 
   },
 };
