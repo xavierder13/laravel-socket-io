@@ -50,7 +50,7 @@
               </v-btn>
             </div>
             <div>
-              <v-btn class="white--text" plain small @click="logout">
+              <v-btn class="white--text" plain small @click="confirmLogout()">
                 <v-icon small class="mr-1">mdi-logout</v-icon> Logout
               </v-btn>
             </div>
@@ -214,8 +214,9 @@ export default {
         (response) => {
           if (response.data.success) {
             this.overlay = false;
-            localStorage.removeItem("access_token");
-            localStorage.removeItem("user");
+
+            // remove all local storage including access_token
+            window.localStorage.clear();
             this.$router.push("/login").catch(() => {});
           }
         },
@@ -225,21 +226,45 @@ export default {
 
           // if unauthenticated (401)
           if (error.response.status == "401") {
-            localStorage.removeItem("access_token");
+
+            // remove all local storage including access_token
+            window.localStorage.clear();
             this.$router.push({ name: "login" });
           }
         }
       );
     },
+
+    confirmLogout() {
+      
+      this.$swal({
+        title: "Log Out",
+        text: "Are you sure you want to log out?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "primary",
+        cancelButtonColor: "secondary",
+        confirmButtonText: "Log Out",
+      }).then((result) => {
+        
+        if (result.value) {
+          this.overlay = true;
+          this.logout();
+        }
+        
+      });
+
+    },
+
     sessionExpiredSwal(){
       this.$swal({
           title: "Session Expired",
-          text: "You have been inactive for 15 Minutes(s)",
+          text: "You have been inactive for 30 Minutes(s)",
           showCancelButton: false,
           confirmButtonText: "Ok",
       });
 
-      this.logout();
+      // this.logout();
     },
     ...mapActions("auth", ["getUser"]),
     ...mapActions("userRolesPermissions", ["userRolesPermissions"]),
