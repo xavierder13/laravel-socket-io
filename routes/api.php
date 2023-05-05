@@ -86,6 +86,44 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth:api', 'user.maintenance
 });
 
 //Permissions
+Route::group(['prefix' => 'sap', 'middleware' => ['auth:api']], function(){
+
+    Route::get('/ar_invoice', [
+        'uses' => 'API\SAPModuleController@get_ar_invoice_fields',
+        'as' => 'get.ar.invoice.fields',
+    ]);
+
+    Route::group(['prefix' => 'udf'], function(){
+        Route::get('/index', [
+            'uses' => 'API\SAPUDFController@index',
+            'as' => 'sap.udf.index',
+        ]);
+        Route::get('/create', [
+            'uses' => 'API\SAPUDFController@create',
+            'as' => 'sap.udf.create',
+        ]);
+        Route::post('/store', [
+            'uses' => 'API\SAPUDFController@store',
+            'as' => 'sap.udf.store',
+        ]);
+        Route::post('/edit', [
+            'uses' => 'API\SAPUDFController@edit',
+            'as' => 'sap.udf.edit',
+        ]);
+        Route::post('/update/{id}', [
+            'uses' => 'API\SAPUDFController@update',
+            'as' => 'sap.udf.update',
+        ]);
+        Route::post('/delete', [
+            'uses' => 'API\SAPUDFController@delete',
+            'as' => 'sap.udf.delete',
+        ]);
+    });
+    
+
+});
+
+//Permissions
 Route::group(['prefix' => 'permission', 'middleware' => ['auth:api', 'permission.maintenance']], function(){
     Route::get('/index', [
         'uses' => 'API\PermissionController@index',

@@ -84,7 +84,7 @@
         </v-list-item>
         <v-list-group
           no-action
-          v-if="userPermissions.user_list || userPermissions.user_create"
+          v-if="hasPermission('user-list') || hasPermission('user-create')"
         >
           <!-- List Group Icon-->
           <v-icon slot="prependIcon">mdi-account-arrow-right-outline</v-icon>
@@ -95,12 +95,12 @@
             </v-list-item-content>
           </template>
           <!-- List Group Items -->
-          <v-list-item link to="/user/index" v-if="userPermissions.user_list">
+          <v-list-item link to="/user/index" v-if="hasPermission('user-list')">
             <v-list-item-content>
               <v-list-item-title>User Record</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item link to="/user/create" v-if="userPermissions.user_create">
+          <v-list-item link to="/user/create" v-if="hasPermission('user-create')">
             <v-list-item-content>
               <v-list-item-title>Create New</v-list-item-title>
             </v-list-item-content>
@@ -109,10 +109,10 @@
         <v-list-group
           no-action
           v-if="
-            userPermissions.role_list ||
-            userPermissions.role_create ||
-            userPermissions.permission_list ||
-            userPermissions.permission_create
+            hasPermission('role-list') ||
+            hasPermission('role-create') ||
+            hasPermission('permission-list') ||
+            hasPermission('permission-create')
           "
         >
           <!-- List Group Icon-->
@@ -124,7 +124,7 @@
             </v-list-item-content>
           </template>
           <!-- List Group Items -->
-          <v-list-item link to="/role/index" v-if="userPermissions.role_list">
+          <v-list-item link to="/role/index" v-if="hasPermission('role-list')">
             <v-list-item-content>
               <v-list-item-title>Role</v-list-item-title>
             </v-list-item-content>
@@ -132,14 +132,14 @@
           <v-list-item
             link
             to="/permission/index"
-            v-if="userPermissions.permission_list"
+            v-if="hasPermission('permission-list')"
           >
             <v-list-item-content>
               <v-list-item-title>Permission</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
-        <v-list-item link to="/activity_logs" v-if="userPermissions.activity_logs">
+        <v-list-item link to="/activity_logs" v-if="hasPermission('activity-logs')">
           <v-list-item-icon>
             <v-icon>mdi-history</v-icon>
           </v-list-item-icon>
@@ -174,7 +174,7 @@
 <script>
 
 import axios from "axios";
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 
 export default {
   data() {
@@ -276,13 +276,13 @@ export default {
 			return this.$store.state.idleVue.isIdle;
 		},
     ...mapState("auth", ["user"]),
-    ...mapState("userRolesPermissions", ["userRoles", "userPermissions"]),
+    ...mapGetters("userRolesPermissions", ["hasRole", "hasPermission"]),
   },
   watch: {
     isIdle(){
-      if (this.isIdle) {
-        this.sessionExpiredSwal();
-      }
+      // if (this.isIdle) {
+      //   this.sessionExpiredSwal();
+      // }
     }
   },
 
