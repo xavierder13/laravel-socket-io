@@ -26,7 +26,7 @@
               append-icon="mdi-magnify"
               label="Search"
               single-line
-              v-if="userPermissions.user_list"
+              v-if="hasPermission('activity-logs')"
             ></v-text-field>
             <v-spacer></v-spacer>
           </v-card-title>
@@ -36,7 +36,7 @@
             :search="search"
             :loading="loading"
             loading-text="Loading... Please wait"
-            v-if="userPermissions.activity_logs"
+            v-if="hasPermission('activity-logs')"
           >
           </v-data-table>
         </v-card>
