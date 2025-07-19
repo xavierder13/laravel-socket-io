@@ -66,5 +66,10 @@ class Kernel extends HttpKernel
         'permission.maintenance' => \App\Http\Middleware\PermissionMaintenance::class,
         'role.maintenance' => \App\Http\Middleware\RoleMaintenance::class,
         'activity.logs' => \App\Http\Middleware\ActivityLogs::class,
+        'exam.maintenance' => \App\Http\Middleware\ExamMaintenance::class,
+        'exam.question.maintenance' => \App\Http\Middleware\ExamQuestionMaintenance::class,
+        'exam.choice.maintenance' => \App\Http\Middleware\ExamChoiceMaintenance::class,
+        'exam.answer.sheet.maintenance' => \App\Http\Middleware\ExamAnswerSheetMaintenance::class,
+        'exam.result.maintenance' => \App\Http\Middleware\ExamResultMaintenance::class,
     ];
 }

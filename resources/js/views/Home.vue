@@ -84,6 +84,30 @@
         </v-list-item>
         <v-list-group
           no-action
+          v-if="hasPermission('exam-list') || hasPermission('exam-create')"
+        >
+          <!-- List Group Icon-->
+          <v-icon slot="prependIcon">mdi-account-arrow-right-outline</v-icon>
+          <!-- List Group Title -->
+          <template v-slot:activator>
+            <v-list-item-content>
+              <v-list-item-title>Exam Management</v-list-item-title>
+            </v-list-item-content>
+          </template>
+          <!-- List Group Items -->
+          <v-list-item link to="/exam/index" v-if="hasPermission('exam-list')">
+            <v-list-item-content>
+              <v-list-item-title>Exam List</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item link to="/exam/create" v-if="hasPermission('exam-create')">
+            <v-list-item-content>
+              <v-list-item-title>Create New</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-group>
+        <v-list-group
+          no-action
           v-if="hasPermission('user-list') || hasPermission('user-create')"
         >
           <!-- List Group Icon-->

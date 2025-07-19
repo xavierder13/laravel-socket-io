@@ -85,41 +85,103 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth:api', 'user.maintenance
 
 });
 
-//Permissions
-Route::group(['prefix' => 'sap', 'middleware' => ['auth:api']], function(){
+//Exam 
+Route::group(['prefix' => 'exam', 'middleware' => ['auth:api', 'exam.maintenance']], function(){
 
-    Route::get('/ar_invoice', [
-        'uses' => 'API\SAPModuleController@get_ar_invoice_fields',
-        'as' => 'get.ar.invoice.fields',
+    Route::get('/index', [
+        'uses' => 'API\ExamController@index',
+        'as' => 'exam.index',
     ]);
 
-    Route::group(['prefix' => 'udf'], function(){
-        Route::get('/index', [
-            'uses' => 'API\SAPUDFController@index',
-            'as' => 'sap.udf.index',
-        ]);
-        Route::get('/create', [
-            'uses' => 'API\SAPUDFController@create',
-            'as' => 'sap.udf.create',
-        ]);
-        Route::post('/store', [
-            'uses' => 'API\SAPUDFController@store',
-            'as' => 'sap.udf.store',
-        ]);
-        Route::post('/edit', [
-            'uses' => 'API\SAPUDFController@edit',
-            'as' => 'sap.udf.edit',
-        ]);
-        Route::post('/update/{id}', [
-            'uses' => 'API\SAPUDFController@update',
-            'as' => 'sap.udf.update',
-        ]);
-        Route::post('/delete', [
-            'uses' => 'API\SAPUDFController@delete',
-            'as' => 'sap.udf.delete',
-        ]);
-    });
+    Route::post('/store', [
+        'uses' => 'API\ExamController@store',
+        'as' => 'exam.store',
+    ]);
+
+    Route::post('/update', [
+        'uses' => 'API\ExamController@update',
+        'as' => 'exam.update',
+    ]);
+
+    Route::post('/delete', [
+        'uses' => 'API\ExamController@delete',
+        'as' => 'exam.delete',
+    ]);
+
+});
+
+//Exam Question
+Route::group(['prefix' => 'exam_question', 'middleware' => ['auth:api', 'exam.question.maintenance']], function(){
+
+    Route::get('/index', [
+        'uses' => 'API\ExamQuestionController@index',
+        'as' => 'exam.question.index',
+    ]);
+
+    Route::post('/store', [
+        'uses' => 'API\ExamQuestionController@store',
+        'as' => 'exam.question.store',
+    ]);
+
+    Route::post('/update', [
+        'uses' => 'API\ExamQuestionController@update',
+        'as' => 'exam.question.update',
+    ]);
     
+    Route::post('/delete', [
+        'uses' => 'API\ExamQuestionController@delete',
+        'as' => 'exam.question.delete',
+    ]);
+
+});
+
+//Exam Choice
+Route::group(['prefix' => 'exam_choice', 'middleware' => ['auth:api', 'exam.choice.maintenance']], function(){
+
+    Route::get('/index', [
+        'uses' => 'API\ExamChoiceController@index',
+        'as' => 'exam.choice.index',
+    ]);
+
+    Route::post('/store', [
+        'uses' => 'API\ExamChoiceController@store',
+        'as' => 'exam.choice.store',
+    ]);
+
+    Route::post('/update', [
+        'uses' => 'API\ExamChoiceController@update',
+        'as' => 'exam.choice.update',
+    ]);
+    
+    Route::post('/delete', [
+        'uses' => 'API\ExamChoiceController@delete',
+        'as' => 'exam.choice.delete',
+    ]);
+
+});
+
+//Exam Answer Sheet
+Route::group(['prefix' => 'exam_answer_sheet', 'middleware' => ['auth:api', 'exam.answer.sheet.maintenance']], function(){
+
+    Route::get('/index', [
+        'uses' => 'API\ExamAnswerSheetController@index',
+        'as' => 'exam.anawer.sheet.index',
+    ]);
+
+    Route::post('/store', [
+        'uses' => 'API\ExamAnswerSheetController@store',
+        'as' => 'exam.anawer.sheet.store',
+    ]);
+
+    Route::post('/update', [
+        'uses' => 'API\ExamAnswerSheetController@update',
+        'as' => 'exam.anawer.sheet.update',
+    ]);
+    
+    Route::post('/delete', [
+        'uses' => 'API\ExamAnswerSheetController@delete',
+        'as' => 'exam.anawer.sheet.delete',
+    ]);
 
 });
 

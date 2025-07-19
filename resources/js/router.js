@@ -3,6 +3,8 @@ import Router from 'vue-router';
 import Home from './views/Home.vue';
 import Login from './auth/Login.vue';
 import Dashboard from './views/dashboard/Dashboard.vue';
+import ExamCreate from './views/exam/ExamCreate.vue';
+import ExamIndex from './views/exam/ExamIndex.vue';
 import UserIndex from './views/user/UserIndex.vue';
 import UserCreate from './views/user/UserCreate.vue';
 import UserProfile from './views/user/UserProfile.vue';
@@ -26,6 +28,16 @@ const routes = [
         path: '/dashboard',
         name: 'dashboard',
         component: Dashboard
+      },
+      {
+        path: '/exam/index',
+        name: 'user.index',
+        component: ExamIndex
+      },
+      {
+        path: '/exam/create',
+        name: 'user.create',
+        component: ExamCreate
       },
       {
         path: '/user/index',
