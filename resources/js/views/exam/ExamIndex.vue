@@ -266,21 +266,35 @@
                       <v-row>
                         <v-col>
                           <span class="h3 font-weight-bold mt-2">Choices</span>
+                          <v-tooltip top>
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-btn 
+                                x-small 
+                                class="ml-2 mb-3"
+                                color="primary" 
+                                rounded 
+                                fab
+                                v-bind="attrs" v-on="on"
+                                @click="addChoiceItems()"
+                              >
+                                  <v-icon>mdi-plus</v-icon> 
+                              </v-btn>
+                            </template>
+                            <span>Add Choice</span>
+                          </v-tooltip>
                         </v-col>
                       </v-row>
                       <template v-for="(choice, i) in editedQuestion.choices">
                         <v-row>
                           <v-col class="my-0 py-0">
                             <v-text-field
+                              class="mb-1"
                               outlined
                               dense
                               name="points"
                               v-model="editedQuestion.choices[i]"
                               label="Points"
-                              :error-messages="pointsErrors"
-                              @input="$v.editedQuestion.points.$touch()"
-                              @blur="$v.editedQuestion.points.$touch()"
-                              @keypress="intNumValFilter()"
+                              hide-details=""
                             >
                             <template slot="append-outer">
                               <v-btn small color="red" icon>
@@ -291,13 +305,8 @@
                           </v-col>
                         </v-row>
                       </template>
-                      <v-row>
-                        <v-col class="mt-0 pt-0" align='right'>
-                          <v-btn x-small color="primary">add item</v-btn>
-                        </v-col>
-                      </v-row>
                     </template>
-                    <v-divider style="border: 0.5px solid; border-radius: 1px;" class="elevation-6"></v-divider>
+                    <v-divider style="border: 0.5px solid; border-radius: 1px;" class="elevation-6 mt-6"></v-divider>
                     <v-row>
                       <v-col>
                         <span class="h3 font-weight-bold mt-2">Answer</span>
@@ -851,7 +860,7 @@ export default {
       this.editedQuestionIndex = -1;
     },
     addChoiceItems() {
-      this.choiceItems.push('');
+      this.editedQuestion.choices.push('');
     },
     isUnauthorized(error) {
       // if unauthenticated (401)
