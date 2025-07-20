@@ -209,10 +209,10 @@
                 <v-icon> mdi-close-circle </v-icon>
               </v-btn>
             </v-card-title>
-            <v-divider class="mt-0"></v-divider>
+            <!-- <v-divider class="mt-0"></v-divider> -->
             <v-card-text class="full-height-questionnaire-card">
-              <v-row class="mt-2">
-                <v-col cols="4" class="my-0 py-0">
+              <v-row class="mt-2 px-0">
+                <v-col cols="4" class="ma-0 pl-0 pr-2">
                   <v-card class="full-height-questionnaire-details-card pa-4 ma-0 mt-0">
                     <v-row>
                       <v-col>
@@ -222,6 +222,8 @@
                     <v-row>
                       <v-col class="my-0 py-0">
                         <v-autocomplete
+                          outlined
+                          dense
                           name="type"
                           :items="exam_types"
                           v-model="editedQuestion.type"
@@ -233,6 +235,8 @@
                       </v-col>
                       <v-col class="my-0 py-0">
                         <v-text-field
+                          outlined
+                          dense
                           name="points"
                           v-model="editedQuestion.points"
                           label="Points"
@@ -252,7 +256,7 @@
                           label="Question Text"
                           @input="$v.editedQuestion.question_text.$touch() + (questionError.question_text = [])"
                           @blur="$v.editedQuestion.question_text.$touch()"
-                          rows="4"
+                          rows="2"
                           outlined
                         ></v-textarea>
                       </v-col>
@@ -264,12 +268,14 @@
                           <span class="h3 font-weight-bold mt-2">Choices</span>
                         </v-col>
                       </v-row>
-                      <template v-for="choice in editedQuestion.choices">
+                      <template v-for="(choice, i) in editedQuestion.choices">
                         <v-row>
                           <v-col class="my-0 py-0">
                             <v-text-field
+                              outlined
+                              dense
                               name="points"
-                              v-model="editedQuestion.points"
+                              v-model="editedQuestion.choices[i]"
                               label="Points"
                               :error-messages="pointsErrors"
                               @input="$v.editedQuestion.points.$touch()"
@@ -286,8 +292,8 @@
                         </v-row>
                       </template>
                       <v-row>
-                        <v-col algin='right'>
-                          <v-btn small color="primary">add item</v-btn>
+                        <v-col class="mt-0 pt-0" align='right'>
+                          <v-btn x-small color="primary">add item</v-btn>
                         </v-col>
                       </v-row>
                     </template>
@@ -300,6 +306,8 @@
                     <v-row>
                       <v-col class="my-0 py-0">
                         <v-text-field
+                          outlined
+                          dense
                           name="points"
                           v-model="editedQuestion.points"
                           label="Points"
@@ -313,35 +321,34 @@
                     <v-row>
                       <v-col align="right">
                         <v-btn small class="mr-1" @click="clearQuestion()">Cancel</v-btn> 
-                        <v-btn small color="primary">{{ editedQuestionIndex > -1 ? 'Update' : 'Add' }}</v-btn>
+                        <v-btn small color="primary" @click="saveQuestionnaire()">{{ editedQuestionIndex > -1 ? 'Update' : 'Add' }}</v-btn>
                       </v-col>
                     </v-row>
                   </v-card>
-                  
                 </v-col>
-                <v-divider vertical style="border: 0.5px solid; border-radius: 1px;" class="elevation-6"></v-divider>
+                <!-- <v-divider vertical style="border: 0.5px solid; border-radius: 1px;" class="elevation-6"></v-divider> -->
                 <v-col cols="8">
                   <v-row>
-                    <v-col class="my-0 py-0">
+                    <v-col class="my-0 pl-2">
                       <v-card class="pt-2">
                         <v-simple-table dense >
                           <template v-slot:default>
                             <thead>
                               <tr>
-                                <th class="pl-2-" style="width:10%">#</th>
-                                <th class="text-left" style="width:20%">Type</th>
-                                <th class="text-left" style="width:50%">Questions</th>
-                                <th class="text-left" style="width:10%">Points</th>
-                                <th class="text-left" style="width:10%">Actions</th>
+                                <th class="pl-2-" style="width:6%">#</th>
+                                <th class="text-left" style="width:15%">Type</th>
+                                <th class="text-left" style="width:63%">Questions</th>
+                                <th class="text-left" style="width:7%">Points</th>
+                                <th class="text-left" style="width:9%">Actions</th>
                               </tr>
                             </thead>
                             <tbody>
                               <tr v-for="(question, index) in exam_questions">
-                                <td style="width:10%"> {{ index + 1 }} </td>
-                                <td style="width:20%"> {{ question.type }} </td>
-                                <td style="width:50%" class="ellipsis"> {{ question.question_text }} asdasdasdas dasdsqwerrthfgnfgh asdasdqwq sdg wetwer asds r sdfawew aeaw eawe    </td>
-                                <td style="width:10%"> {{ question.points }} </td>
-                                <td style="width:10%">
+                                <td style="width:6%"> {{ index + 1 }} </td>
+                                <td style="width:15%"> {{ question.type }} </td>
+                                <td style="width:63%" class="ellipsis"> {{ question.question_text }} asdasdasdas dasdsqwerrthfgnfgh asdasdqwq sdg wetwer asds r sdfawew aeaw eawe    </td>
+                                <td style="width:7%"> {{ question.points }} </td>
+                                <td style="width:9%">
                                   <v-tooltip top v-if="hasPermission('exam-edit')">
                                     <template v-slot:activator="{ on, attrs }">
                                       <v-icon
@@ -406,13 +413,13 @@
 </template>
 <style scoped>
   .full-height-questionnaire-card {
-    height: calc(105vh - 135px); /* Adjust 270px to suits your needs */
+    height: calc(110vh - 135px); /* Adjust 270px to suits your needs */
     overflow-y: auto;
     overflow-x: hidden;
   }
 
   .full-height-questionnaire-details-card {
-    height: calc(100vh - 135px); /* Adjust 270px to suits your needs */
+    height: calc(104vh - 135px); /* Adjust 270px to suits your needs */
     overflow-y: auto;
     overflow-x: hidden;
   }
@@ -431,7 +438,7 @@
   }
 
   tbody {
-      height: calc(95vh - 135px);
+      height: calc(99vh - 135px);
       overflow-y: auto;
   }
 
